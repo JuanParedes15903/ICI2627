@@ -14,15 +14,11 @@ public class MsPacMan extends PacmanController {
 	@Override
 	public MOVE getMove(Game game, long timeDue) {
 
-		MOVE sol = MOVE.NEUTRAL; // sol de solucion
-		if (game.getPossibleMoves(game.getPacmanCurrentNodeIndex(), game.getPacmanLastMoveMade()).length > 1) {
-			// Sirve para determinar si estoy en un cruce o no (en un pasillo sólo tendré 1 movimiento posible)
-			return sol;
-		}
-
 		int posPacman = game.getPacmanCurrentNodeIndex();
 		if (game.isJunction(posPacman)) { // Solo hace decisiones si está en un cruce
 			int limit = 30;
+			
+			
 			GHOST nearestGhost = getNearestChasingGhost(limit, game); // Prioriza que no haya fantasmas cerca
 			if (nearestGhost != null) {
 				GameView.addPoints(game, colours[0], // DEPURACIÓN
@@ -85,9 +81,13 @@ public class MsPacMan extends PacmanController {
 		while()
 		return null;
 	}
+	
+	tuple[] verSiguientesCruces(int node) {
+		return {numFantasmas, numComestibles, numPildoras, numPPoder}
+	}
 
 	public String getName() {
-		return "MsPacMan";
+		return "MsPacManPr1_JPC_SBV";
 	}
 
 }
