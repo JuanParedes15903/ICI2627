@@ -75,14 +75,15 @@ public class MsPacMan extends PacmanController {
 		}
 		return nearestGhost;
 	}
-
-	public int siguienteNodo(int nodo, MOVE direccion) {
-		int numPasos=0;
-		while()
-		return null;
-	}
 	
-	tuple[] verSiguientesCruces(int node) {
+	tuple[] verSiguientesCruces(int node, Game game) {
+		MOVE direccionActual= game.getPacmanLastMoveMade();
+		MOVE[] direcciones=game.getPossibleMoves(node, direccionActual);
+		for(MOVE m: direcciones) {
+			int siguienteNodo= game.getNeighbour(node, m);	
+			
+			}
+		
 		return {numFantasmas, numComestibles, numPildoras, numPPoder}
 	}
 
