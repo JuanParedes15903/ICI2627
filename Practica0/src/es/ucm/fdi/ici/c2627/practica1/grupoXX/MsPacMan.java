@@ -1,6 +1,11 @@
 package es.ucm.fdi.ici.c2627.practica1.grupoXX;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import pacman.controllers.PacmanController;
 import pacman.game.Game;
 import pacman.game.GameView;
@@ -13,101 +18,78 @@ public class MsPacMan extends PacmanController {
 
 	@Override
 	public MOVE getMove(Game game, long timeDue) {
-
 		int posPacman = game.getPacmanCurrentNodeIndex();
 		if (game.isJunction(posPacman)) { // Solo hace decisiones si está en un cruce
-			int limit = 30;
-
-			GHOST nearestGhost = getNearestChasingGhost(limit, game); // Prioriza que no haya fantasmas cerca
-			if (nearestGhost != null) {
-				GameView.addPoints(game, colours[0], // DEPURACIÓN
-						game.getShortestPath(game.getGhostCurrentNodeIndex(nearestGhost), posPacman));
-				return game.getApproximateNextMoveAwayFromTarget(posPacman, game.getGhostCurrentNodeIndex(nearestGhost),
-						game.getPacmanLastMoveMade(), Constants.DM.PATH);
+			Map<MOVE, int[]> caminos = verSiguientesCruces(posPacman, game);
+			int actFantasmas = 5;
+			int actPildoras = -1;
+			int actPoder = -1;
+			int actComestibles=-1;
+			MOVE salida=game.getPacmanLastMoveMade();
+			for (MOVE direccion : caminos.keySet()) {
+				int[] datosCamino = caminos.get(direccion);
+				if(datosCamino[2]<actFantasmas) {
+					salida=direccion;
+					actFantasmas=datosCamino[2];
+				}
+				else if(datosCamino[3]>actComestibles) {
+					salida=direccion;
+					actComestibles=datosCamino[3];
+				}
+				/*else if(datosCamino[1]>actPoder) {
+					salida=direccion;
+					actFantasmas=datosCamino[3];
+				}*/
+				else if(datosCamino[0]>actPildoras) {
+					salida=direccion;
+					actPildoras=datosCamino[0];
+				}
 			}
-			nearestGhost = getNearestEdibleGhost(limit, game); // Después prioriza que haya fantasmas que se puedan
-																// comer
-			if (nearestGhost != null) {
-				GameView.addPoints(game, colours[2], // DEPURACIÓN
-						game.getShortestPath(game.getGhostCurrentNodeIndex(nearestGhost), posPacman));
-				return game.getApproximateNextMoveTowardsTarget(posPacman, game.getGhostCurrentNodeIndex(nearestGhost),
-						game.getPacmanLastMoveMade(), Constants.DM.PATH);
-			}
-			int nearestPill = game.getClosestNodeIndexFromNodeIndex(posPacman, game.getActivePillsIndices(),
-					Constants.DM.PATH); // Por último busca la pildora más cercana
-			GameView.addPoints(game, colours[3], game.getShortestPath(nearestPill, posPacman)); // DEPURACIÓN
-			return game.getApproximateNextMoveTowardsTarget(posPacman, nearestPill, game.getPacmanLastMoveMade(),
-					Constants.DM.PATH);
+			return salida;
 		} else
 			return null;
-	}
-
-	private GHOST getNearestEdibleGhost(int limit, Game game) { // devuelve el fantasma comestible más cercano
-		GHOST nearestGhost = null;
-		double minDistance = limit;
-		for (GHOST ghostType : GHOST.values()) {
-			if (game.getGhostLairTime(ghostType) <= 0 && game.getGhostEdibleTime(ghostType) > 0) {
-				double ghostDistance = game.getDistance(game.getPacmanCurrentNodeIndex(),
-						game.getGhostCurrentNodeIndex(ghostType), game.getGhostLastMoveMade(ghostType),
-						Constants.DM.PATH);
-				if (ghostDistance < minDistance && ghostDistance <= limit) {
-					minDistance = ghostDistance;
-					nearestGhost = ghostType;
-				}
-			}
-		}
-		return nearestGhost;
-	}
-
-	private GHOST getNearestChasingGhost(int limit, Game game) { // devuelve el fantasma más cercano
-		GHOST nearestGhost = null;
-		double minDistance = limit;
-		for (GHOST ghostType : GHOST.values()) {
-			if (game.getGhostLairTime(ghostType) <= 0 && game.getGhostEdibleTime(ghostType) <= 0) {
-				double ghostDistance = game.getDistance(game.getGhostCurrentNodeIndex(ghostType),
-						game.getPacmanCurrentNodeIndex(), game.getGhostLastMoveMade(ghostType), Constants.DM.PATH);
-				if (ghostDistance < minDistance && ghostDistance <= limit) {
-					minDistance = ghostDistance;
-					nearestGhost = ghostType;
-				}
-			}
-		}
-		return nearestGhost;
 	}
 
 	public int[] siguienteCruce(int nodo, MOVE direccion, Game game) {
 		int numPildoras = 0;
 		int numPPoder = 0;
 		int numFantasmas = 0;
+		int numComestibles = 0;
 		while (!game.isJunction(nodo)) {
-			int pillIndex = game.getPillIndex(nodo); 		// comprueba que hay pildora activa
+			int pillIndex = game.getPillIndex(nodo); // comprueba que hay pildora activa
 			boolean hayPildora = pillIndex != -1 && game.isPillStillAvailable(pillIndex);
-			if(hayPildora) numPildoras++;
-
+			if (hayPildora)
+				numPildoras++;
 			int powerIndex = game.getPowerPillIndex(nodo); // comprueba que hay pildora de poder activa
 			boolean hayPPoder = powerIndex != -1 && game.isPowerPillStillAvailable(powerIndex);
-			if(hayPPoder) numPPoder++;
-			
-			for (GHOST ghost : GHOST.values()) {			//comprueba que hay un fantasma (POSIBLE comprobar en que direccion va el fantasma para no contarlo)
-				if (game.getGhostCurrentNodeIndex(ghost) == nodo) { 
-					numFantasmas++;
+			if (hayPPoder)
+				numPPoder++;
+			for (GHOST ghost : GHOST.values()) { // comprueba que hay un fantasma (POSIBLE comprobar en que direccion va
+													// el fantasma para no contarlo)
+				if (game.getGhostCurrentNodeIndex(ghost) == nodo) {
+					if (game.getGhostEdibleTime(ghost) > 0)
+						numComestibles++;
+					else
+						numFantasmas++;
 				}
-
 			}
-			
+			MOVE[] direcciones = game.getPossibleMoves(nodo, direccion);
+			direccion = direcciones[0];
+			nodo = game.getNeighbour(nodo, direccion);
 		}
-		return new int[] {numPildoras,numPPoder,numFantasmas};
+		return new int[] { numPildoras, numPPoder, numFantasmas,numComestibles };
 	}
 
-	public int[] verSiguientesCruces(int node, Game game) {
-		MOVE direccionActual= game.getPacmanLastMoveMade();
-		MOVE[] direcciones=game.getPossibleMoves(node, direccionActual);
-		for(MOVE m: direcciones) {
-			int siguienteNodo= game.getNeighbour(node, m);	
-			
-			}
-		
-		return {numFantasmas, numComestibles, numPildoras, numPPoder}
+	public Map<MOVE, int[]> verSiguientesCruces(int nodo, Game game) {
+		MOVE direccionActual = game.getPacmanLastMoveMade();
+		MOVE[] direcciones = game.getPossibleMoves(nodo, direccionActual);
+		Map<MOVE, int[]> salida = new HashMap<>();
+		for (MOVE d : direcciones) {
+			int siguienteNodo = game.getNeighbour(nodo, d);
+			int[] camino = siguienteCruce(siguienteNodo, d, game);
+			salida.put(d, camino);
+		}
+		return salida;
 	}
 
 	public String getName() {
