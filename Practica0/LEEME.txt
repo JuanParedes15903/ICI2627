@@ -23,3 +23,102 @@ hecho desde la carpeta src (o sea, con la carpeta es en la raíz del zip).
 El enunciado completo, con los ejercicios y los criterios de entrega, está
 en la wiki de la asignatura (Prácticas > Práctica 0). El enlace está en el
 Campus Virtual.
+
+
+Práctica 1:
+
+Se ha determinado que el mejor modelo para los fantasmas es el del archivo 
+Ghosts3, que es una versión modificada del modelo de fantasmas con roles 
+asignados dinámicamente, pero añadiendo predicción de bayas de poder, lo 
+que significa que los fantasmas comprueban si llegan antes que MsPacMan a
+una píldora de poder, en caso de que MsPacMan se encuentre a 15 nodos o 
+menos de una y, en caso de que llegue MsPacMan antes/al mismo tiempo, 
+empiezan la rutina de huida. Se ha elegido este modelo porque, en un span 
+de 1000 partidas con cada modelo de MsPacMan, se ha visto que, aunque no 
+era el que obtenía las medias de puntos más bajas (era el segundo), era 
+el que obtenía las medias de turnos más bajas y con menor error estándar 
+de todos los modelos, y, teniendo en cuenta el error estándar de la 
+puntuación, era el mejor de los seis.
+
+Los prompts que se han usado para generar los distintos modelos son los 
+siguientes:
+
+Ghosts:  teniendo esa clase (hace referencia a la clase game) como base para
+un simulador del juego ms pacman, crea un controlador para los fantasmas que
+siga una estrategia por roles de la siguiente manera:
+
+BLINKY: persigue de forma normal a ms pacman, usando el método 
+getNextMoveTowardsTarget
+
+PINKY: intenta tapar el camino más cercano a ms pacman que le lleve a la
+baya más cercana
+
+INKY: intenta tapar el camino más cercano a ms pacman que le lleve a la 
+baya de poder más cercana
+
+SUE: va alternando entre las tres estrategias de forma aleatoria
+
+para todos los fantasmas, si están en el tiempo en el que se les puede comer, 
+huyen de ms pacman hasta que la mitad del tiempo restante (porque se mueven 
+la mitad de rápido que de normal en estado comestible) es menor que la 
+distancia a la que está ms pacman, en cuyo caso vuelven a su rol normal, y, 
+si estando en estado normal, ms pacman está a menos de un cruce, van a por 
+ella independientemente de su rol 
+
+Ghosts2:  modifica la clase que has generado anteriormente para que los roles 
+no estén asignados a un fantasma en específico, si no que sea el fantasma más 
+apropiado el que se encargue de cierto rol, y crea un nuevo rol que se dedique 
+a patrullar cerca de la "jaula" de los fantasmas, a un cruce de distancia, 
+eliminando así lo que hacía sue antes
+
+un rol sólo puede estar asignado a un fantasma, no puede haber dos fantasmas 
+haciendo lo mismo
+
+es decir, el fantasma más cercano a ms pacman será el que la persiga, el 
+fantasma más cercano al camino que lleva a ms pacman a la píldora de poder más 
+cercana será el que lo tape, etc 
+
+BlockingGhosts:  genera un nuevo controlador en el que se cumpla que: el primer 
+fantasma que sale, BLINKY, debe perseguir a ms pacman todo el rato, intentando 
+alcanzarla usando el método getNextMoveTowardsTarget; los demás fantasmas, PINKY, 
+INKY y SUE, intentarán tapar las posibles salidas por las que iría ms pacman, 
+determinando qué cruces están a 1 de distancia de ella, usando DM.PATH, y yendo 
+cada uno de ellos a un cruce distinto, ya que ms pacman no puede dar marcha atrás, 
+y cada cruce sólo tiene 4 " entradas"
+
+a esto se le sumará que los fantasmas huirán de ms pacman mientras que estén en 
+estado comestible hasta que la mitad del tiempo restante del estado comestible sea 
+estrictamente menor que la distancia que los separa individualmente, es decir, cada 
+fantasma tendrá que hacer esta comprobación, o hasta que se los coma, en cuyo caso 
+se irán a la "jaula" y en cuanto salgan, volverán a su rol anterior 
+
+Ghosts3: modifica este controlador (el archivo de Ghosts2) para fantasmas del juego 
+ms pacman de tal forma que los fantasmas evalúen si llegan antes a la píldora de poder 
+que ms pacman y, en caso de no hacerlo, empezar la rutina de huida
+
+En este caso, hubo que corregir el comportamiento de los fantasmas, ya que siempre se
+comprobaba si llegaba antes MsPacMan o ellos, lo que les hacía entrar en un bucle 
+infinito de la rutina de huida
+
+AdvancedBlockingGhosts:  amplía la clase anterior para que el fantasma más apropiado, 
+el que está a menos distancia, tape la píldora de poder más cercana a ms pacman en 
+caso de que esta esté a tres cruces o menos de distancia
+
+haz también que calcule si llega antes el fantasma o ms pacman, haciendo que si llega 
+el fantasma antes, este bloquee el camino y, si tiene la oportunidad, se coma a ms 
+pacman; en caso de llegar antes ms pacman, todos los fantasmas empezarán a huir, 
+anticipando que ms pacman se los pueda comer
+
+GhostsZones:  haz un nuevo controlador para el mismo motor en el que los fantasmas 
+estén asignados a "zonas", dividiendo el mapa en cuatro, como si se hubiera cortado 
+por el medio de formas horizontal y vertical, y cada fantasma será asignado a una zona 
+en sentido horario empezando por el sector de arriba a la izquierda
+
+dentro de cada sector, los fantasmas siguen los mismos patrones: intentan tapar el camino 
+más probable por el que pueda entrar ms pacman a su sector; en el caso de que ms pacman ya 
+esté en su sector, tapan el camino por el que ms pacman podría llegar a la píldora de poder 
+más cercana a ella, y, si ocurre que ms pacman está a un cruce o menos de distancia de la 
+píldora, y ellos están más lejos, empezarán la rutina de huida de ms pacman, que durará 
+hasta que el tiempo en el que son comestibles partido de dos sea menor que la distancia que 
+separa a cada uno individualmente de ms pacman; por último, si detectan que llegan antes a 
+un cruce hacia el que está yendo ms pacman, irán a él para intentar comerse a ms pacman 
