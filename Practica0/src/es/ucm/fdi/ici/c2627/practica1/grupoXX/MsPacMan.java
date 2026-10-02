@@ -17,8 +17,7 @@ public class MsPacMan extends PacmanController {
 		int posPacman = game.getPacmanCurrentNodeIndex();
 		if (game.isJunction(posPacman)) { // Solo hace decisiones si está en un cruce
 			int limit = 30;
-			
-			
+
 			GHOST nearestGhost = getNearestChasingGhost(limit, game); // Prioriza que no haya fantasmas cerca
 			if (nearestGhost != null) {
 				GameView.addPoints(game, colours[0], // DEPURACIÓN
@@ -75,8 +74,32 @@ public class MsPacMan extends PacmanController {
 		}
 		return nearestGhost;
 	}
-	
-	tuple[] verSiguientesCruces(int node, Game game) {
+
+	public int[] siguienteCruce(int nodo, MOVE direccion, Game game) {
+		int numPildoras = 0;
+		int numPPoder = 0;
+		int numFantasmas = 0;
+		while (!game.isJunction(nodo)) {
+			int pillIndex = game.getPillIndex(nodo); 		// comprueba que hay pildora activa
+			boolean hayPildora = pillIndex != -1 && game.isPillStillAvailable(pillIndex);
+			if(hayPildora) numPildoras++;
+
+			int powerIndex = game.getPowerPillIndex(nodo); // comprueba que hay pildora de poder activa
+			boolean hayPPoder = powerIndex != -1 && game.isPowerPillStillAvailable(powerIndex);
+			if(hayPPoder) numPPoder++;
+			
+			for (GHOST ghost : GHOST.values()) {			//comprueba que hay un fantasma (POSIBLE comprobar en que direccion va el fantasma para no contarlo)
+				if (game.getGhostCurrentNodeIndex(ghost) == nodo) { 
+					numFantasmas++;
+				}
+
+			}
+			
+		}
+		return new int[] {numPildoras,numPPoder,numFantasmas};
+	}
+
+	public int[] verSiguientesCruces(int node, Game game) {
 		MOVE direccionActual= game.getPacmanLastMoveMade();
 		MOVE[] direcciones=game.getPossibleMoves(node, direccionActual);
 		for(MOVE m: direcciones) {
@@ -90,5 +113,4 @@ public class MsPacMan extends PacmanController {
 	public String getName() {
 		return "MsPacManPr1_JPC_SBV";
 	}
-
 }
