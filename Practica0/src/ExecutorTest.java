@@ -2,6 +2,7 @@ import es.ucm.fdi.ici.c2627.practica0.grupoIndividual.MsPacManRandom;
 import es.ucm.fdi.ici.c2627.practica0.grupoIndividual.MsPacManRunAway;
 import es.ucm.fdi.ici.c2627.practica1.grupoXX.Ghosts;
 import es.ucm.fdi.ici.c2627.practica1.grupoXX.Ghosts2;
+import es.ucm.fdi.ici.c2627.practica1.grupoXX.MsPacMan2;
 import pacman.Executor;
 import pacman.controllers.GhostController;
 import pacman.controllers.PacmanController;
@@ -13,7 +14,7 @@ public class ExecutorTest {
     private static final int     N   = 100;     // false: N partidas midiendo
 
     public static void main(String[] args) {
-        PacmanController pacMan = new MsPacManRunAway();
+        PacmanController pacMan = new MsPacMan2();
         GhostController  ghosts = new Ghosts2();
 
         Executor executor = new Executor.Builder()
