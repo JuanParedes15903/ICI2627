@@ -160,19 +160,21 @@ public class MsPacMan2 extends PacmanController {
 					actPoder = datosCamino[1];
 					actFantasmas = datosCamino[2];
 					actComestibles = datosCamino[3];
-				} else if (datosCamino[0] > actPildoras) {
+				} else if (datosCamino[0] > actPildoras && datosCamino[1] == 0) { //ybusca el camino con mas pildoras si no tienen de poder
 					salida = direccion;
 					actPildoras = datosCamino[0];
 					actPoder = datosCamino[1];
 					actFantasmas = datosCamino[2];
 					actComestibles = datosCamino[3];
 				}
-			} else if (datosCamino[1] > 0) {
-				salida = direccion;
+			}
+			else if (getNearestChasingGhost(limit, game) != null && datosCamino[1] > 0 ) { 
+				salida = direccion; 
 				actPildoras = datosCamino[0];
 				actPoder = datosCamino[1];
 				actFantasmas = datosCamino[2];
 				actComestibles = datosCamino[3];
+				continue;
 			}
 		}
 		return salida;
