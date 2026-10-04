@@ -57,8 +57,8 @@ public class MsPacMan2 extends PacmanController {
 			direccion = direcciones[0];
 			nodo = game.getNeighbour(nodo, direccion);
 		}
-		return new int[] { numPildoras, numPPoder, numFantasmas, numComestibles, pasos, nodo }; // nodo guarda la
-																								// posicion del cruce
+		return new int[] { numPildoras, numPPoder, numFantasmas, numComestibles, pasos, nodo, direccion.ordinal() }; // nodo guarda la
+																								// posicion del cruce y la direccion final
 	}
 
 	public Map<MOVE, int[]> verSiguientesCruces(int nodo, Game game, int contador, MOVE dir) {
@@ -76,7 +76,7 @@ public class MsPacMan2 extends PacmanController {
 				if (datosCamino[2] == 0 && llegoAntes(game, datosCamino[5], datosCamino[4])) { // solo compruebo los
 																								// siguientes cruces si
 																								// no me cortan antes
-					Map<MOVE, int[]> posiblesCaminos = verSiguientesCruces(datosCamino[5], game, contador, direccion);
+					Map<MOVE, int[]> posiblesCaminos = verSiguientesCruces(datosCamino[5], game, contador, MOVE.values()[datosCamino[6]]);
 
 					MOVE caminoElegido = seleccionCamino(game, posiblesCaminos);
 					int[] datosCaminoElegido = posiblesCaminos.get(caminoElegido);
@@ -128,7 +128,7 @@ public class MsPacMan2 extends PacmanController {
 	}
 
 	private MOVE seleccionCamino(Game game, Map<MOVE, int[]> caminos) {
-		int limit = 30;
+		int limit = 20;
 		int actFantasmas = 5;
 		int actPildoras = -1;
 		int actPoder = -1;
@@ -160,7 +160,7 @@ public class MsPacMan2 extends PacmanController {
 					actPoder = datosCamino[1];
 					actFantasmas = datosCamino[2];
 					actComestibles = datosCamino[3];
-				} else if (datosCamino[0] > actPildoras && datosCamino[1] == 0) { //ybusca el camino con mas pildoras si no tienen de poder
+				} else if (datosCamino[0] > actPildoras && datosCamino[1] == 0) { //busca el camino con mas pildoras si no tienen de poder
 					salida = direccion;
 					actPildoras = datosCamino[0];
 					actPoder = datosCamino[1];
@@ -183,4 +183,5 @@ public class MsPacMan2 extends PacmanController {
 	public String getName() {
 		return "MsPacManPr1_JPC_SBV";
 	}
+
 }
