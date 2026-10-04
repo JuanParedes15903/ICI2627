@@ -12,7 +12,7 @@ import pacman.game.Game;
 
 public class Ghosts3 extends GhostController {
 
-	private enum Role {
+    private enum Role {
         PURSUER,                 // Persigue a Ms. Pac-Man
         POWER_PILL_INTERCEPTOR,  // Tapa el camino a la píldora de poder más cercana
         PILL_INTERCEPTOR,        // Tapa el camino a la baya/píldora normal más cercana
@@ -23,6 +23,9 @@ public class Ghosts3 extends GhostController {
     
     // Distancia máxima a la que Pac-Man debe estar de la Power Pill para considerar peligro inminente
     private static final int POWER_PILL_DANGER_DISTANCE = 15;
+
+    // Fantasma que persigue por proximidad (adicional al PURSUER oficial)
+    private GHOST secondaryPursuer = null;
 
     @Override
     public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue) {
@@ -43,6 +46,47 @@ public class Ghosts3 extends GhostController {
 
         // 2. Asignar roles dinámicamente solo entre fantasmas fuera de la jaula
         EnumMap<GHOST, Role> assignedRoles = assignRoles(game, targetPursuer, targetPowerPill, targetPill);
+
+        // --- INICIO LÓGICA: MÁXIMO DOS PERSEGUIDORES ---
+        GHOST officialPursuer = null;
+        for (GHOST g : assignedRoles.keySet()) {
+            if (assignedRoles.get(g) == Role.PURSUER) {
+                officialPursuer = g;
+                break;
+            }
+        }
+
+        List<GHOST> proximityGhosts = new ArrayList<>();
+        for (GHOST g : GHOST.values()) {
+            if (g == officialPursuer) continue; // El PURSUER oficial no entra en esta lista
+            if (game.getGhostLairTime(g) > 0) continue;
+            
+            int ghostPos = game.getGhostCurrentNodeIndex(g);
+            if (ghostPos == -1) continue;
+            
+            int dist = game.getShortestPathDistance(ghostPos, pacmanPos);
+            if (dist != -1 && dist < 15) {
+                proximityGhosts.add(g);
+            }
+        }
+
+        if (proximityGhosts.isEmpty()) {
+            secondaryPursuer = null;
+        } else {
+            if (proximityGhosts.contains(secondaryPursuer)) {
+                if (proximityGhosts.size() > 1) {
+                    // Se quiere unir un tercer fantasma. Eliminamos de la persecución
+                    // al que NO tiene el rol de perseguidor (el actual secondaryPursuer)
+                    proximityGhosts.remove(secondaryPursuer);
+                    secondaryPursuer = proximityGhosts.get(0); // Reemplazado por el nuevo
+                }
+                // Si el tamaño es 1, el secondaryPursuer sigue siendo el mismo.
+            } else {
+                // El secondaryPursuer anterior ya no está cerca; asignamos uno nuevo.
+                secondaryPursuer = proximityGhosts.get(0);
+            }
+        }
+        // --- FIN LÓGICA ---
 
         // 3. Calcular el movimiento de cada fantasma activo
         for (GHOST ghost : GHOST.values()) {
@@ -141,7 +185,10 @@ public class Ghosts3 extends GhostController {
 
         // REGLA 2: PROXIMIDAD (Si está a menos de 15 nodos de Pac-Man, ataca directamente)
         if (distToPacman != -1 && distToPacman < 15) {
-            return game.getNextMoveTowardsTarget(ghostPos, pacmanPos, DM.PATH);
+            // VERIFICACIÓN AÑADIDA: Solo persigue si es el PURSUER oficial o el perseguidor secundario activo
+            if (role == Role.PURSUER || ghost == secondaryPursuer) {
+                return game.getNextMoveTowardsTarget(ghostPos, pacmanPos, DM.PATH);
+            }
         }
 
         // REGLA 3: MOVER HACIA EL OBJETIVO DEL ROL ASIGNADO

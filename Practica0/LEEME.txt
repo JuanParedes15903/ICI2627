@@ -96,6 +96,10 @@ Ghosts3: modifica este controlador (el archivo de Ghosts2) para fantasmas del ju
 ms pacman de tal forma que los fantasmas evalúen si llegan antes a la píldora de poder 
 que ms pacman y, en caso de no hacerlo, empezar la rutina de huida
 
+haz también que solo pueda haber dos fantasmas persiguiendo a ms pacman simultaneamente
+se eliminará de la persecución al fantasma que no tenga el rol de perseguidor en el 
+momento en el que se quiera unir un tercer fantasma a la persecución
+
 En este caso, hubo que corregir el comportamiento de los fantasmas, ya que siempre se
 comprobaba si llegaba antes MsPacMan o ellos, lo que les hacía entrar en un bucle 
 infinito de la rutina de huida
@@ -122,3 +126,5 @@ píldora, y ellos están más lejos, empezarán la rutina de huida de ms pacman,
 hasta que el tiempo en el que son comestibles partido de dos sea menor que la distancia que 
 separa a cada uno individualmente de ms pacman; por último, si detectan que llegan antes a 
 un cruce hacia el que está yendo ms pacman, irán a él para intentar comerse a ms pacman 
+
+Se ha usado el modelo de LLM Gemini Pro
