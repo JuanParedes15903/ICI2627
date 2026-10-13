@@ -65,6 +65,10 @@ distancia a la que está ms pacman, en cuyo caso vuelven a su rol normal, y,
 si estando en estado normal, ms pacman está a menos de un cruce, van a por 
 ella independientemente de su rol 
 
+Este modelo de fantasmas obtuvo una puntuación media de 1542.09, con un error 
+estándar de 53.92. Consiguió esta puntuación con una media de 901.75 turnos y un
+error estándar de 27.76
+
 Ghosts2:  modifica la clase que has generado anteriormente para que los roles 
 no estén asignados a un fantasma en específico, si no que sea el fantasma más 
 apropiado el que se encargue de cierto rol, y crea un nuevo rol que se dedique 
@@ -77,6 +81,10 @@ haciendo lo mismo
 es decir, el fantasma más cercano a ms pacman será el que la persiga, el 
 fantasma más cercano al camino que lleva a ms pacman a la píldora de poder más 
 cercana será el que lo tape, etc 
+
+Este modelo de fantasmas obtuvo una puntuación media de 1497.73, con un error 
+estándar de 46.89. Consiguió esta puntuación con una media de 919.4 turnos y un
+error estándar de 27.95
 
 BlockingGhosts:  genera un nuevo controlador en el que se cumpla que: el primer 
 fantasma que sale, BLINKY, debe perseguir a ms pacman todo el rato, intentando 
@@ -92,6 +100,10 @@ estrictamente menor que la distancia que los separa individualmente, es decir, c
 fantasma tendrá que hacer esta comprobación, o hasta que se los coma, en cuyo caso 
 se irán a la "jaula" y en cuanto salgan, volverán a su rol anterior 
 
+Este modelo de fantasmas obtuvo una puntuación media de 1634.18, con un error 
+estándar de 59.44. Consiguió esta puntuación con una media de 893.9 turnos y un
+error estándar de 25.69
+
 Ghosts3: modifica este controlador (el archivo de Ghosts2) para fantasmas del juego 
 ms pacman de tal forma que los fantasmas evalúen si llegan antes a la píldora de poder 
 que ms pacman y, en caso de no hacerlo, empezar la rutina de huida
@@ -104,6 +116,10 @@ En este caso, hubo que corregir el comportamiento de los fantasmas, ya que siemp
 comprobaba si llegaba antes MsPacMan o ellos, lo que les hacía entrar en un bucle 
 infinito de la rutina de huida
 
+Este modelo de fantasmas obtuvo una puntuación media de 1476.12, con un error 
+estándar de 41.5. Consiguió esta puntuación con una media de 883.95 turnos y un
+error estándar de 45.1
+
 AdvancedBlockingGhosts:  amplía la clase anterior para que el fantasma más apropiado, 
 el que está a menos distancia, tape la píldora de poder más cercana a ms pacman en 
 caso de que esta esté a tres cruces o menos de distancia
@@ -112,6 +128,10 @@ haz también que calcule si llega antes el fantasma o ms pacman, haciendo que si
 el fantasma antes, este bloquee el camino y, si tiene la oportunidad, se coma a ms 
 pacman; en caso de llegar antes ms pacman, todos los fantasmas empezarán a huir, 
 anticipando que ms pacman se los pueda comer
+
+Este modelo de fantasmas obtuvo una puntuación media de 1583.21, con un error 
+estándar de 41.6. Consiguió esta puntuación con una media de 934.62 turnos y un
+error estándar de 25.50
 
 GhostsZones:  haz un nuevo controlador para el mismo motor en el que los fantasmas 
 estén asignados a "zonas", dividiendo el mapa en cuatro, como si se hubiera cortado 
@@ -127,4 +147,13 @@ hasta que el tiempo en el que son comestibles partido de dos sea menor que la di
 separa a cada uno individualmente de ms pacman; por último, si detectan que llegan antes a 
 un cruce hacia el que está yendo ms pacman, irán a él para intentar comerse a ms pacman 
 
+Este modelo de fantasmas obtuvo una puntuación media de 1617.68, con un error 
+estándar de 47.36. Consiguió esta puntuación con una media de 1021.59 turnos y un
+error estándar de 28.97
+
 Se ha usado el modelo de LLM Gemini Pro
+
+Se decidió que se iba a presentar el modelo de fantasmas Ghosts3 ya que era el que había obtenido 
+la media de puntuación más baja, aunque el error estándar no acompañase tanto como con Ghosts2, y 
+la media de turnos más baja con diferencia. La combinación de estos dos factores fue lo que determinó
+su elección.
