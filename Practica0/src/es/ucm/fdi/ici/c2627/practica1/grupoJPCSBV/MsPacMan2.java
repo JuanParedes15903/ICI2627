@@ -1,16 +1,21 @@
-package es.ucm.fdi.ici.c2627.practica1.grupoXX;
+package es.ucm.fdi.ici.c2627.practica1.grupoJPCSBV;
 
+import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import pacman.controllers.PacmanController;
 import pacman.game.Game;
+import pacman.game.GameView;
 import pacman.game.Constants;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 
-public class MsPacMan3 extends PacmanController {
-	private static final int HOLGURA = 4; // tamaño del pacman
+public class MsPacMan2 extends PacmanController {
+	private Color[] colours = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE }; // DEPURACIÓN
+	private static final int HOLGURA = 2; // tamaño del pacman
 
 	@Override
 	public MOVE getMove(Game game, long timeDue) {
@@ -41,12 +46,10 @@ public class MsPacMan3 extends PacmanController {
 				numPPoder++;
 			for (GHOST ghost : GHOST.values()) { // comprueba que hay un fantasma
 				if (game.getGhostCurrentNodeIndex(ghost) == nodo) {
-					if (game.getGhostEdibleTime(ghost) > 0) // Guarda fantasmas comestibles
-						// (comparado con solo contarlos si el numero de pasos es menor al tiempo
-						// restante sale mucha menos puntuación)
+					if (game.getGhostEdibleTime(ghost) > 0)
 						numComestibles++;
 					else if (game.getGhostLastMoveMade(ghost) != direccion) // Solo guarda al fantasma si va en la misma
-																			// direccion al Pacman
+																			// direccion // direccion al Pacman
 						numFantasmas++;
 				}
 			}
@@ -54,8 +57,8 @@ public class MsPacMan3 extends PacmanController {
 			direccion = direcciones[0];
 			nodo = game.getNeighbour(nodo, direccion);
 		}
-		return new int[] { numPildoras, numPPoder, numFantasmas, numComestibles, pasos, nodo, direccion.ordinal() };
-		// guarda la posicion del cruce y la direccion final
+		return new int[] { numPildoras, numPPoder, numFantasmas, numComestibles, pasos, nodo, direccion.ordinal() }; // nodo guarda la
+																								// posicion del cruce y la direccion final
 	}
 
 	public Map<MOVE, int[]> verSiguientesCruces(int nodo, Game game, int contador, MOVE dir) {
@@ -73,8 +76,7 @@ public class MsPacMan3 extends PacmanController {
 				if (datosCamino[2] == 0 && llegoAntes(game, datosCamino[5], datosCamino[4])) { // solo compruebo los
 																								// siguientes cruces si
 																								// no me cortan antes
-					Map<MOVE, int[]> posiblesCaminos = verSiguientesCruces(datosCamino[5], game, contador,
-							MOVE.values()[datosCamino[6]]);
+					Map<MOVE, int[]> posiblesCaminos = verSiguientesCruces(datosCamino[5], game, contador, MOVE.values()[datosCamino[6]]);
 
 					MOVE caminoElegido = seleccionCamino(game, posiblesCaminos);
 					int[] datosCaminoElegido = posiblesCaminos.get(caminoElegido);
@@ -131,19 +133,12 @@ public class MsPacMan3 extends PacmanController {
 		int actPildoras = -1;
 		int actPoder = -1;
 		int actComestibles = -1;
-		boolean pildorasCerca = false;
-		boolean comestiblesCerca = false;
+
 		MOVE salida = game.getPacmanLastMoveMade();
 		for (MOVE direccion : caminos.keySet()) {
 			int[] datosCamino = caminos.get(direccion);
-			if (datosCamino[0] > 0) { // Si hay alguna pildora en algún camino no hace falta buscar
-				pildorasCerca = true;
-			}
-			if (datosCamino[3] > 0) { // Si hay fantasmas comestibles no busca pildoras
-				comestiblesCerca = true;
-			}
 			if (datosCamino[2] == 0 && llegoAntes(game, datosCamino[5], datosCamino[4])) {
-				if (datosCamino[2] < actFantasmas) { // Prioriza que no haya fantasmas
+				if (datosCamino[2] < actFantasmas) {
 					salida = direccion; // Se actualizan todos los datos a la salida actualmente elegida
 					actPildoras = datosCamino[0];
 					actPoder = datosCamino[1];
@@ -165,35 +160,21 @@ public class MsPacMan3 extends PacmanController {
 					actPoder = datosCamino[1];
 					actFantasmas = datosCamino[2];
 					actComestibles = datosCamino[3];
-				} else if (datosCamino[0] > actPildoras && datosCamino[1] == 0) { // busca el camino con mas pildoras si
-																					// no tienen de poder
+				} else if (datosCamino[0] > actPildoras && datosCamino[1] == 0) { //busca el camino con mas pildoras si no tienen de poder
 					salida = direccion;
 					actPildoras = datosCamino[0];
 					actPoder = datosCamino[1];
 					actFantasmas = datosCamino[2];
 					actComestibles = datosCamino[3];
 				}
-			} else if (getNearestChasingGhost(limit, game) != null && datosCamino[1] > 0) {
-				salida = direccion; // Compromete seguridad por evitar bucles y ganar más puntos con las pildoras de
-									// poder
+			}
+			else if (getNearestChasingGhost(limit, game) != null && datosCamino[1] > 0 ) { 
+				salida = direccion; 
 				actPildoras = datosCamino[0];
 				actPoder = datosCamino[1];
 				actFantasmas = datosCamino[2];
 				actComestibles = datosCamino[3];
 				continue;
-			}
-		}
-		if (!pildorasCerca && !comestiblesCerca) { // en el caso de que no haya pildoras ni fantasmas comestibles cerca
-													// busca un camino a la pildora mas cercana para evitar
-													// estancamientos
-			int nearestPill = game.getClosestNodeIndexFromNodeIndex(game.getPacmanCurrentNodeIndex(),
-					game.getActivePillsIndices(), Constants.DM.PATH);
-			MOVE posibleMovimientoAPildora = game.getApproximateNextMoveTowardsTarget(game.getPacmanCurrentNodeIndex(),
-					nearestPill, game.getPacmanLastMoveMade(), Constants.DM.PATH);
-			if (caminos.get(posibleMovimientoAPildora) != null && caminos.get(posibleMovimientoAPildora)[2] == 0
-					&& llegoAntes(game, caminos.get(posibleMovimientoAPildora)[5],
-							caminos.get(posibleMovimientoAPildora)[4])) {
-				salida = posibleMovimientoAPildora;
 			}
 		}
 		return salida;
@@ -202,4 +183,5 @@ public class MsPacMan3 extends PacmanController {
 	public String getName() {
 		return "MsPacManPr1_JPC_SBV";
 	}
+
 }

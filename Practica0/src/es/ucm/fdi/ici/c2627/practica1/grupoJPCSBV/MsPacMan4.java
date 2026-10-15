@@ -1,4 +1,4 @@
-package es.ucm.fdi.ici.c2627.practica1.grupoXX;
+package es.ucm.fdi.ici.c2627.practica1.grupoJPCSBV;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,13 +11,31 @@ import pacman.game.Constants.MOVE;
 
 public class MsPacMan4 extends PacmanController {
 	private static final int HOLGURA = 4; // tamaño del pacman
-
+	int debugCaminoFantasmas = 0;
+	int debugCaminoComestibles = 0;
+	int debugCaminoPoder = 0;
+	int debugCaminoPildoras = 0;
+	int debugCaminoSinPildorasNiComestibles = 0;
+	int debugForzarPoder = 0;
 	@Override
 	public MOVE getMove(Game game, long timeDue) {
 		int posPacman = game.getPacmanCurrentNodeIndex();
 		if (game.isJunction(posPacman)) { // Solo hace decisiones si está en un cruce
 
 			Map<MOVE, int[]> caminos = verSiguientesCruces(posPacman, game, 0, game.getPacmanLastMoveMade());
+			
+			System.out.println("Camino con menos fantasmas: " + debugCaminoFantasmas + "\n Camino con más comestibles: "
+					+ debugCaminoComestibles + "\n Camino con mas pildoras de poder: " + debugCaminoPoder
+					+ "\n Camino con mas pildoras: " + debugCaminoPildoras + "\n Camino forzado con pildora de poder: "
+					+ debugForzarPoder + " \n Camino de busqueda de pildoras si no hay cerca: "
+					+ debugCaminoSinPildorasNiComestibles);
+			debugCaminoComestibles = 0;
+			debugCaminoPoder = 0;
+			debugCaminoFantasmas = 0;
+			debugCaminoPildoras = 0;
+			debugCaminoSinPildorasNiComestibles = 0;
+			debugForzarPoder = 0;
+			
 			return seleccionCamino(game, caminos);
 		} else
 			return null;
@@ -54,6 +72,7 @@ public class MsPacMan4 extends PacmanController {
 			direccion = direcciones[0];
 			nodo = game.getNeighbour(nodo, direccion);
 		}
+		
 		return new int[] { numPildoras, numPPoder, numFantasmas, numComestibles, pasos, nodo, direccion.ordinal() };
 		// guarda la posicion del cruce y la direccion final
 	}
@@ -126,6 +145,8 @@ public class MsPacMan4 extends PacmanController {
 	}
 
 	private MOVE seleccionCamino(Game game, Map<MOVE, int[]> caminos) {
+		
+
 		int limit = 20;
 		int actFantasmas = 5;
 		int actPildoras = -1;
@@ -149,12 +170,16 @@ public class MsPacMan4 extends PacmanController {
 					actPoder = datosCamino[1];
 					actFantasmas = datosCamino[2];
 					actComestibles = datosCamino[3];
+
+					debugCaminoFantasmas++;
 				} else if (datosCamino[3] > actComestibles) {
 					salida = direccion;
 					actPildoras = datosCamino[0];
 					actPoder = datosCamino[1];
 					actFantasmas = datosCamino[2];
 					actComestibles = datosCamino[3];
+
+					debugCaminoComestibles++;
 				} else if (getNearestChasingGhost(limit, game) != null && datosCamino[1] > actPoder) { // Solo mira
 																										// pildoras de
 																										// poder si hay
@@ -165,6 +190,8 @@ public class MsPacMan4 extends PacmanController {
 					actPoder = datosCamino[1];
 					actFantasmas = datosCamino[2];
 					actComestibles = datosCamino[3];
+
+					debugCaminoPoder++;
 				} else if (datosCamino[0] > actPildoras && datosCamino[1] == 0) { // busca el camino con mas pildoras si
 																					// no tienen de poder
 					salida = direccion;
@@ -172,6 +199,7 @@ public class MsPacMan4 extends PacmanController {
 					actPoder = datosCamino[1];
 					actFantasmas = datosCamino[2];
 					actComestibles = datosCamino[3];
+					debugCaminoPildoras++;
 				}
 			} else if (getNearestChasingGhost(limit, game) != null && datosCamino[1] > 0) {
 				salida = direccion; // Compromete seguridad por evitar bucles y ganar más puntos con las pildoras de
@@ -180,6 +208,7 @@ public class MsPacMan4 extends PacmanController {
 				actPoder = datosCamino[1];
 				actFantasmas = datosCamino[2];
 				actComestibles = datosCamino[3];
+				debugForzarPoder++;
 				continue;
 			}
 		}
@@ -195,7 +224,11 @@ public class MsPacMan4 extends PacmanController {
 							caminos.get(posibleMovimientoAPildora)[4])) {
 				salida = posibleMovimientoAPildora;
 			}
+
+			debugCaminoSinPildorasNiComestibles++;
 		}
+
+		
 		return salida;
 	}
 
