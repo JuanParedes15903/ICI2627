@@ -7,6 +7,10 @@ Para el desarrollo del controlador de MsPacMan no se ha usado IA. Cada versión 
 El desarrollo empezó con la base de la entrega del MsPacMan de la práctica 0 que huía de fantasmas si estaban cerca, iba hacia los fantasmas si se los podía comer, y en caso contrario buscaba la pildora de poder más cercana. 
 La puntuación del modelo base ha sido:
 
+GhostsBasico: 2303.8333333333335 +- 61.92833017917663
+GhostsIntermedio: 2448.6666666666665 +- 77.47223522987089
+GhostsAvanzado: 1928.3 +- 52.591633997767964
+GhostAggresive:
 
 El primer cambio respecto al modelo base fue que solo se pudiese decidir en los cruces ya que son los únicos sitios donde es importante la decisión. Esto no cambia el resultado de las partidas pero ahorra tiempo de procesamiento.
 Después se implementó el primer cambio del comportamiento de MsPacMan, guardar qué se encuentra en los caminos hasta el siguiente cruce y teniendo en cuenta esos datos decidir cuál es el mejor movimiento. La prioridad que se dió para elegir estos caminos fue 1º que elija el menor número de fantasmas ya que es una muerte segura (después se añadió que los fantasmas no se guardasen en el camino si iban en la misma dirección que el pacman ya que es imposible que le cojan), 2º el camino con más fantasmas comestibles para maximizar puntuación, y por último el camino con más pildoras. Esto dejó dos problemas importantes: al ir por un camino no sabía si hay fantasmas cerca que vayan a venir por delante y que vayan a cortar el paso, y segundo que en la mayoría de partidas el pacman acababa yendo en una línea recta al no encontrar ni fantasmas ni pildoras, por lo que se acababa el tiempo.

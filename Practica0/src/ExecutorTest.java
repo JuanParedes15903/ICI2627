@@ -15,7 +15,7 @@ public class ExecutorTest {
 
     public static void main(String[] args) {
         PacmanController pacMan = new MsPacManPr0Individual();
-        GhostController  ghosts = new GhostsBasico();
+        GhostController  ghosts = new GhostsAvanzado();
 
         Executor executor = new Executor.Builder()
                 .setTickLimit(4000)
