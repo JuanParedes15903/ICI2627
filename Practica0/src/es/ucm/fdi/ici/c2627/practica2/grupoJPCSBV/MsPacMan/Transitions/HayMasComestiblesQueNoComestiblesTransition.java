@@ -14,6 +14,6 @@ public class HayMasComestiblesQueNoComestiblesTransition implements Transition{
 	}
 	 @Override
 	    public String toString() {
-	        return cuantosComestibles + " Comestibles, " + cuantosAtacantes + "Atacantes";
+	        return "Hay más comestibles que no comestibles";
 	    }
 }	
