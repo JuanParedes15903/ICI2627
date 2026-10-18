@@ -108,3 +108,7 @@ ha habido un problema a la hora de gestionar las clases, ya que se han ido aplic
 
 ia: sí, para añadir la nueva estrategia a la acción de perseguir, usando este prompt
 integra una estrategia de coordinación espacial obteniendo los movimientos posibles y puntuándolos, haciendo que si el nodo vecino al que lleva un movimiento está a menos de 5 nodos de distancia de otro fantasma persiguiendo, se descarte o se penalice fuertemente
+
+
+##Concurso:
+Para el concurso hemos elegido las versiones MsPacManV1 y GhsotFSMController. En los apartados anteriores se explica el por qué debajo de cada versión.
