@@ -63,3 +63,17 @@ Ghosts3: 3716.133333333333 +- 92.50300634884728
 Como las puntuaciones son inferiores contra todos los enemigos y las desviaciones son más altas contra todos, sabemos que no hay mejora.
 
 ##Domingo 19:
+
+
+# Fantasmas:
+## vie 16 oct · Acciones y Transitions originales
+Actions de fantasmas (4): EsperarSalirAction, HuirDispersosAction, HuirMsPacmanAction, PerseguirAction
+Transitions de fantasmas (4): ComidoTransition, GenericTransition, MasCercaAMsPacmanQueAPPTransition, TiempoComestibleCeroTransition
+al principio había solo tres clases action: EsperarSalirAction, PerseguirAction y HuirAction, pero esta última se dividió en dos para que una se aleje lo máximo posible de ms pacman y la otra intente alejarse también de los demás fantasmas, para que ms pacman tenga menos posibilidades de comerselos a todos a la vez
+ia: sí
+se usaron dos prompts:
+-en el primero, se pasó el diseño creado a papel y las clases necesarias para poder trabajar, como Action, Input, etc, y se 
+pidio que se adaptara el diagrama a un diseño fsm usando las clases proporcionadas
+-en el segundo, se usó este prompt: quiero dividir la clase HuirAction en dos, de tal forma que: 
+- en caso de estar demasiado cerca de ms pacman, considerando demasiado cerca unos 20 nodos, se tomen el camino que les vaya a hacer alejarse lo máximo posible de ella
+- por otro lado, si ya están lo suficientemente lejos (> 20 nodos), los fantasmas tomen los caminos que vayan a hacer que se mantengan lo más alejados los unos de los otros y de ms pacman a la vez estás clases se llamarán HuirMsPacmanAction y HuirDispersosAction respectivamente
