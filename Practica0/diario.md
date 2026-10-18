@@ -1,8 +1,8 @@
-Práctica 1:
+#Práctica 1:
 
 Grupo de Juan Paredes Cruz y Sergio Barbas Vázquez
 
-MsPacMan:
+##MsPacMan:
 Para el desarrollo del controlador de MsPacMan no se ha usado IA. Cada versión añade funcionalidades a la anterior y no usa funciones alternativas.
 El desarrollo empezó con la base de la entrega del MsPacMan de la práctica 0 que huía de fantasmas si estaban cerca, iba hacia los fantasmas si se los podía comer, y en caso contrario buscaba la pildora de poder más cercana. 
 La puntuación del modelo base ha sido:
@@ -10,27 +10,53 @@ La puntuación del modelo base ha sido:
 GhostsBasico: 2303.8333333333335 +- 61.92833017917663
 GhostsIntermedio: 2448.6666666666665 +- 77.47223522987089
 GhostsAvanzado: 1928.3 +- 52.591633997767964
-GhostAggresive:
+Ghosts3: 2434.6 +- 74.92551872112648
 
 El primer cambio respecto al modelo base fue que solo se pudiese decidir en los cruces ya que son los únicos sitios donde es importante la decisión. Esto no cambia el resultado de las partidas pero ahorra tiempo de procesamiento.
 Después se implementó el primer cambio del comportamiento de MsPacMan, guardar qué se encuentra en los caminos hasta el siguiente cruce y teniendo en cuenta esos datos decidir cuál es el mejor movimiento. La prioridad que se dió para elegir estos caminos fue 1º que elija el menor número de fantasmas ya que es una muerte segura (después se añadió que los fantasmas no se guardasen en el camino si iban en la misma dirección que el pacman ya que es imposible que le cojan), 2º el camino con más fantasmas comestibles para maximizar puntuación, y por último el camino con más pildoras. Esto dejó dos problemas importantes: al ir por un camino no sabía si hay fantasmas cerca que vayan a venir por delante y que vayan a cortar el paso, y segundo que en la mayoría de partidas el pacman acababa yendo en una línea recta al no encontrar ni fantasmas ni pildoras, por lo que se acababa el tiempo.
 El primer problema se solucionó parcialmente implementando la función de los apuntes de ver quién llega antes, si el pacman o los fantasmas. Con esto se pueden filtrar los caminos que no son seguros por los fantasmas que no se encuentran en el propio camino. Esta es la primera versión de MsPacMan.
-Sus puntuaciones son de:
 
+Sus puntuaciones son de:
+GhostsBasico: 2587.6 +- 63.5496515826521		Cambio respecto a V0:  D=283.77, ET_D=88.73  Diferencia real: D > 2*ET_D Sí hay mejora
+GhostsIntermedio: 1921.0333333333333 +- 42.55855428170979 Cambio respecto a V0: D=-527.63 ET_D=88.39 Diferencia real: |D| > 2*ET_D No hay mejora, empeora la puntuación
+GhostsAvanzado: 1917.9 +- 35.81037900032834  Cambio respecto a V0: D=-10.40 ET_D=63.63 Diferencia real: |D| < 2*ET_D No hay cambios notables en la puntuación
+Ghosts3: 2332.6666666666665 +- 40.778962960590505 Cambio respecto a V0: D=-101.93 ET_D=85.30 
+Diferencia real: |D| < 2*ET_D No hay cambios notables en la puntuación.
+
+Como empeora la puntuación contra enemigos más complejos seguimos comparando con la versión base.
 
 Lo primero que se solucionó con la versión MsPacMan2 fue que aunque se filtren los caminos que se van a cortar antes de que llegue pacman, en un futuro cercano los fantasmas pueden bloquear las salidas del camino elegido por lo que se implementó la busqueda en dos cruces, en el que para cada camino elegido se vuelve a hacer una busqueda de "Habiendo cogido un camino, cuál va a ser el siguiente mejor". Con este razonamiento guardamos todos los datos de dos cruces y elegimos el mejor, calculando también si dentro de dos cruces va a llegar un fantasma antes que pacman. 
 Para intentar mejorar la puntuación obtenida se hizo otro cambio en la selección de caminos en el que solo se elija un camino con pildoras de poder si hay fantasmas cerca, intentando maximizar el número de fantasmas comidos al final de la partida y con ello la puntuación. Este cambio se hizo debido a que por la forma en la que está diseñado el mapa del juego los caminos con píldoras de poder son los caminos que más píldoras normales tienen, por lo que en la mayoría de partidas pacman se comía las píldoras de poder antes de que los fantasmas saliesen de la cárcel.
 Por último se solucionó un error del cálculo de los cruces en el que se guardaba la dirección inicial de un cruce y no la final, ignorando caminos posibles al haber acabado en una dirección distinta a la que se ha comenzado.
 Sus puntuaciones son de:
+GhostsBasico: 4338.466666666666 +- 114.24582302553182		Cambio respecto a V0:  D=2034.63333333333, ET_D=129.950860549526  Diferencia real: D > 2*ET_D Sí hay mejora
+GhostsIntermedio: 4171.233333333334 +- 114.84677610049104		Cambio respecto a V0:  D=1722.56666666667, ET_D=138.534216755965  Diferencia real: D > 2*ET_D Sí hay mejora
+GhostsAvanzado: 3006.2 +- 67.6302713353411		Cambio respecto a V0:  D=1077.9, ET_D=85.672245023969  Diferencia real: D > 2*ET_D Sí hay mejora
+Ghosts3: 3796.6 +- 101.73358720094096		Cambio respecto a V0:  D=1362, ET_D=126.346967199064  Diferencia real: D > 2*ET_D Sí hay mejora
+
+En este caso todas las puntuaciones mejoran significativamente respecto al modelo base por lo que va a ser el modelo con el que comparemos.
 
 El MsPacMan3 soluciona el otro problema que se dió con la primera versión y no se solucionó en la segunda versión. PacMan sigue acabando partidas huyendo infinitamente de los fantasmas en línea recta ya que no detecta ninguna pildora a dos cruces de distancia. Para solucionar esto en la selección de caminos se impuso una condición de que si en ninguno de los caminos posibles hay pildoras se debe coger el camino hacia la píldora más cercana si es segura. Este cambio hizo que pacaman ya no entrase en bucles infinitos, pero provocó que pacman ignorase a los fantasmas comestibles perjudicando en gran medida a la puntuación final. Por eso se añadió la condición de que busque la píldora más cercana si tampoco ha encontrado fantasmas comestibles en ningún camino.
 En la tercera versión de MsPacMan también se planteó añadir el cálculo de ir a por un fantasma comestible calculando el tiempo que le queda de seguir en ese estado, pero tras varios intentos de implementarlo no se consiguió realizar correctamente y las puntuaciones bajaron drásticamente, en su mayoría porque pacman no iba a por los fantasmas. 
 El último cambio de la versión final fue decidir cuál es la mejor HOLGURA para PacMan. Esta es la que decide si PacMan va a llegar antes que los fantasmas a los cruces ya que es el rango de colisión del propio pacman. En la versión 2 comenzó siendo 2 pero probando con otros valores se decidió que 4 era la mejor opción. Durante las partidas 2 era demasiado arriesgado y aunque los fantasmas no llegaban, los dejaba demasiado cerca siguiéndole. Con los valores 3 y 4 la diferencia visual era mínima, pero realizando las simulaciones de miles de partidas el 4 acababa con mejor puntuación. También se probó el 5 pero PacMan era demasiado precavido por lo que la mayoría de caminos válidos los ignoraba.
 Sus puntuaciones son de:
+GhostsBasico: 6596.433333333333 +- 134.71509569661077		Cambio respecto a V2: D=2257.96666666667, ET_D=176.635967705697  Diferencia real: D > 2*ET_D Sí hay mejora
+GhostsIntermedio: 6044.066666666667 +- 178.14533288411155		Cambio respecto a V2: D=1872.83333333333, ET_D=211.956461588382  Diferencia real: D > 2*ET_D Sí hay mejora
+GhostsAvanzado: 3689.5333333333333 +- 87.45847459733449		Cambio respecto a V2: D=683.333333333333, ET_D=110.556946320819  Diferencia real: D > 2*ET_D Sí hay mejora
+Ghosts3: 5517.6 +- 140.01700294902474		Cambio respecto a V2: D=1721, ET_D=173.073637159443  Diferencia real: D > 2*ET_D Sí hay mejora
 
+Todas las puntuaciones mejoran significativamente por lo que es la elegida para el concurso.
 
+MsPacMan4 es el modelo que incorpora los cambios de la corrección. Para recorrer las salidas en un orden fijo se cambió el HashMap por un LinkedHashMap ya que las direcciones se añaden a la lista de posibles movimientos siempre en el mismo orden. Para comprobar qué rama se ejecuta en cada cruce se ha añadido un log que muestra qué caminos se miran.
+Sus puntuaciones son de:
+GhostsBasico: 6182.4 +- 121.19183646727168		Cambio respecto a V3: D=-414.033333333334, ET_D=181.206010482150  Diferencia real: |D| > 2*ET_D No hay mejora, empeora la puntuación
+GhostsIntermedio: 5394.9 +- 151.49777297832236		Cambio respecto a V3: D=-649.166666666667, ET_D=233.853233558534  Diferencia real: |D| > 2*ET_D No hay mejora, empeora la puntuación
+GhostsAvanzado: 3539.1666666666665 +- 84.2292282692572		Cambio respecto a V3: D=-150.366666666667, ET_D=121.423011302336  Diferencia real: |D| < 2*ET_D No hay cambios notables en la puntuación
+Ghosts3: 5185.433333333333 +- 130.0416297150155		Cambio respecto a V3: D=-332.166666666667, ET_D=191.090519319417  Diferencia real: |D| < 2*ET_D No hay cambios notables en la puntuación
 
-Ghosts:
+No hay cambios notables respecto a la anterior versión, y bajan algunas puntuaciones.
+
+##Ghosts:
 Se ha determinado que el mejor modelo para los fantasmas es el del archivo 
 Ghosts3, que es una versión modificada del modelo de fantasmas con roles 
 asignados dinámicamente, pero añadiendo predicción de bayas de poder, lo 

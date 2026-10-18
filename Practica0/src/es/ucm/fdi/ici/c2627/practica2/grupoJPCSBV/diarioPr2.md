@@ -46,8 +46,8 @@ Para comprobar que la decisión de coger pildoras cuando hay 2 fantasmas cerca e
 
 Versión 1, con el cambio a 1 fantasma: 
 
-GhostBasico: 4463.366666666667 +- 84,1440011425618		Cambio respecto a V0:  D=144.56666, ET_D= 90,17281611994333 Diferencia real: D < 2*ET_D No hay mejora
-GhostIntermedio: 4304,566666666667 +- 98,56056791700915 Cambio respecto a V0: D=117,266666666667, ET_D=110,94560183410705 Diferencia real: D < 2*ET_D No hay mejora
+GhostBasico: 4463.366666666667 +- 84,1440011425618		Cambio respecto a V0:  D=144.56666, ET_D= 90,17281611994333 Diferencia real: D < 2*ET_D No hay cambios notables en la puntuación
+GhostIntermedio: 4304,566666666667 +- 98,56056791700915 Cambio respecto a V0: D=117,266666666667, ET_D=110,94560183410705 Diferencia real: D < 2*ET_D No hay cambios notables en la puntuación
 GhostAvanzado: 2828,6 +- 48,58637242359508 		Cambio respecto a V0:  D=202,0333333333334, ET_D= 48,58637242359508 Diferencia real: D > 2*ET_D Sí hay mejora
 Ghosts3: 4032,6 +- 76,22298830725737		Cambio respecto a V0: D=193,5, ET_D= 78,35923742090766 Diferencia real: D > 2*ET_D Sí hay mejora
 
