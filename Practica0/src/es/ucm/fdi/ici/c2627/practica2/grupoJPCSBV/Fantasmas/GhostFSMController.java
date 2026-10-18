@@ -27,6 +27,7 @@ public class GhostFSMController extends GhostController {
     private FSM buildFSM(GHOST ghost) {
         FSM mainFSM = new FSM(ghost + "_MainFSM");
 
+        // Instanciación de acciones (incluyendo la versión de persecución coordinada)
         Action perseguirAct = new PerseguirAction(ghost);
         Action huirMsPacmanAct = new HuirMsPacmanAction(ghost);
         Action huirDispersosAct = new HuirDispersosAction(ghost);
@@ -111,7 +112,7 @@ public class GhostFSMController extends GhostController {
         mainFSM.add(bloqueInferior, comidoTrans, esperarState);
         mainFSM.add(esperarState, revividoTrans, bloqueSuperior);
 
-        // Manejo de estado comestible (¡Prioridad máxima huir!)
+        // Manejo de estado comestible (prioridad a huir)
         mainFSM.add(bloqueSuperior, comestibleTrans, bloqueInferior);
         mainFSM.add(perseguirState, comestibleTrans, bloqueInferior);
         mainFSM.add(bloqueInferior, noComestibleTrans, bloqueSuperior);
@@ -119,7 +120,6 @@ public class GhostFSMController extends GhostController {
         // Transiciones normales entre estrategia superior y persecución
         mainFSM.add(bloqueSuperior, new MasCercaAMsPacmanQueAPPTransition(), perseguirState);
         
-        // El fantasma deja de perseguir si hay demasiados, o si MsPacman se aleja de él
         mainFSM.add(perseguirState, new GenericTransition("Dejar de perseguir (Lógica/Exceso)", 
             in -> ((GhostInput)in).isDebeDejarDePerseguir() || 
                   (!((GhostInput)in).isPersecucionPermitida()) ||

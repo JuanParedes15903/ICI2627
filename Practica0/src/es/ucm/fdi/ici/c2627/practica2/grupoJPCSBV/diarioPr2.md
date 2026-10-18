@@ -1,6 +1,6 @@
 #Diario Práctica 2 grupo JPCSBV
 Integrantes: Juan Paredes Cruz y Sergio Barbas Vázquez
-Concurso:
+Concurso: Fantasmas V1
 Medimos siempre 300 partidas contra: los enemigos proporcionados en el campus.
 
 #MsPacMan:
@@ -66,14 +66,45 @@ Como las puntuaciones son inferiores contra todos los enemigos y las desviacione
 
 
 # Fantasmas:
+
+
 ## vie 16 oct · Acciones y Transitions originales
 Actions de fantasmas (4): EsperarSalirAction, HuirDispersosAction, HuirMsPacmanAction, PerseguirAction
 Transitions de fantasmas (4): ComidoTransition, GenericTransition, MasCercaAMsPacmanQueAPPTransition, TiempoComestibleCeroTransition
 al principio había solo tres clases action: EsperarSalirAction, PerseguirAction y HuirAction, pero esta última se dividió en dos para que una se aleje lo máximo posible de ms pacman y la otra intente alejarse también de los demás fantasmas, para que ms pacman tenga menos posibilidades de comerselos a todos a la vez
 ia: sí
 se usaron dos prompts:
--en el primero, se pasó el diseño creado a papel y las clases necesarias para poder trabajar, como Action, Input, etc, y se 
-pidio que se adaptara el diagrama a un diseño fsm usando las clases proporcionadas
+-en el primero, se pasó el diseño creado a papel y las clases necesarias para poder trabajar, como Action, Input, etc, y se pidió que se adaptara el diagrama a un diseño fsm usando las clases proporcionadas
 -en el segundo, se usó este prompt: quiero dividir la clase HuirAction en dos, de tal forma que: 
 - en caso de estar demasiado cerca de ms pacman, considerando demasiado cerca unos 20 nodos, se tomen el camino que les vaya a hacer alejarse lo máximo posible de ella
-- por otro lado, si ya están lo suficientemente lejos (> 20 nodos), los fantasmas tomen los caminos que vayan a hacer que se mantengan lo más alejados los unos de los otros y de ms pacman a la vez estás clases se llamarán HuirMsPacmanAction y HuirDispersosAction respectivamente
+- por otro lado, si ya están lo suficientemente lejos (> 20 nodos), los fantasmas tomen los caminos que vayan a hacer que se mantengan lo más alejados los unos de los otros y de ms pacman a la vez
+estas clases se llamarán HuirMsPacmanAction y HuirDispersosAction respectivamente
+## sab 17 oct · Fantasmas versión 0
+La clase GhostFSMController es la primera versión, o versión 0, del controlador de los fantasmas
+Inicialmente, tenía 2 estados compuestos, HUIR y CAZAR, y estaba formada por 9 estados simples
+No se tomaron datos a la hora de probar esta primera versión, pero se detectó un problema de flickering en la condición de "liberar" el rol de perseguidor, ya que la condición era que saliera el perseguidor más "veterano" si en algún momento había más de dos perseguidores, pero esto causaba que el que dejaba de ser perseguidor tomara como solución más óptima volver a ser perseguidor, haciendo en la práctica que todos terminaran persiguiendo a ms pacman en fila 
+
+**Resultados tras la corrección del flickering**
+            Media Puntos       Error estándar       Media turnos    Error estándar
+Básico:     2325                63.94               1232            68
+Intermedio: 1916                78                  3888            33
+Avanzado:   10086               203                 1305            71
+
+ia: sí, se ha usado para detectar posibles errores de lógica en las diferentes clases
+en caso de querer revisar el prompt, se subirá en un archivo aparte para no enturbiar este, ya que es el código de todas las clases con una petición de localizar posibles errores de lógica
+
+## dom 18 oct · Fantasmas versión 1
+Se añade una nueva condición a la acción de perseguir para que se intente que no haya varios fantasmas persiguiendo a ms pacman por el mismo pasillo, intentando que se genere de forma orgánica una estrategia de pinza
+
+**Resultados tras la corrección del flickering**
+            Media Puntos       Error estándar       Media turnos    Error estándar
+Básico:     2521                66                  1085            68
+Intermedio: 2398                88                  3549            56
+Avanzado:   10176               173                 1011            51
+
+como se puede observar, esta versión es, por lo general, más rápida que la anterior y, por lo general, aunque empeora las puntuaciones, no es una cantidad desorbitada, por lo que se ha optado por aceptar esta nueva versión
+
+ha habido un problema a la hora de gestionar las clases, ya que se han ido aplicando las modificaciones en las mismas clases siempre, por lo que, en caso de querer comprobar las clases relativas a la versión 0, hay que copiar lo que hay en el archivo v0 al que no tiene extensión
+
+ia: sí, para añadir la nueva estrategia a la acción de perseguir, usando este prompt
+integra una estrategia de coordinación espacial obteniendo los movimientos posibles y puntuándolos, haciendo que si el nodo vecino al que lleva un movimiento está a menos de 5 nodos de distancia de otro fantasma persiguiendo, se descarte o se penalice fuertemente

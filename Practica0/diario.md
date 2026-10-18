@@ -183,7 +183,20 @@ error estándar de 28.97
 
 Se ha usado el modelo de LLM Gemini Pro
 
-Se decidió que se iba a presentar el modelo de fantasmas Ghosts3 ya que era el que había obtenido 
-la media de puntuación más baja, aunque el error estándar no acompañase tanto como con Ghosts2, y 
-la media de turnos más baja con diferencia. La combinación de estos dos factores fue lo que determinó
-su elección.
+Se decidió que se iba a presentar el modelo de fantasmas Ghosts3 ya que era el que había obtenido la media de puntuación más baja, aunque el error estándar no acompañase tanto como con Ghosts2, y la media de turnos más baja con diferencia. La combinación de estos dos factores fue lo que determinó su elección.
+
+
+**REVISIÓN**
+Se ha creado la clase Ghost 4 para modificar la estrategia de "huida preventiva" y hacerla menos conservadora, es decir, que los fantasmas esperen más antes de iniciar la huida en caso de que ms pacman se encuentre cerca de una píldora de poder. Números obtenidos:
+ghosts4: (se sigue la estructura {media punto, error estándar} & {media turnos, error estándar})
+- mspacman: {2129, 42} & {3061, 78}
+- mspacman2: {4222, 99} & {2103, 75}
+- mspacman3: {4974, 132} & {1265, 39}
+- mspacman4: {5367, 137} & {1206, 46}
+ghosts3: 
+- 4: {5263, 129} & {1213, 38}
+- 3: {4910, 135} & {1318, 43}
+- 2: {3122, 77} & {3031, 74}
+- 1: {2773, 62} & {2977, 71}
+Estas pruebas se realizaron con las clases MsPacman1-4 desarrolladas por mi compañero y, aplicando la fórmula de mejora proporcionada en el campus, no resultaba en una mejora tangible, siendo que en algunos casos, aunque de forma mínima, se empeoraba. 
+Por ello, se ha decidido mantener la clase Ghost3 como "mejor clase" 
