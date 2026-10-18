@@ -1,9 +1,9 @@
-package es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV;
+package es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas;
 
 import java.util.EnumMap;
 import es.ucm.fdi.ici.Action;
-import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.actions.*;
-import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.transitions.*;
+import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas.actions.*;
+import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas.transitions.*;
 import es.ucm.fdi.ici.fsm.CompoundState;
 import es.ucm.fdi.ici.fsm.FSM;
 import es.ucm.fdi.ici.fsm.SimpleState;

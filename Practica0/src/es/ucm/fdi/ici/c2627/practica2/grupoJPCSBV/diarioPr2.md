@@ -6,7 +6,7 @@ Medimos siempre 300 partidas contra: los enemigos proporcionados en el campus.
 #MsPacMan:
 ## Viernes 17: versión 0
 Se crea a mano MsPacmanV0 según las indicacions de la guía y se crean las clases correspondientes a cada transición y a cada estado. Se elimina el estado "Acercarse a la píldora de poder segura más cercana" ya que cumple el mismo objetivo que "ir a por píldora de poder" y se cambia la transición "Camino a pildora bloqueado" por "Camino a todas las pildoras de poder bloqueados". 
-Para hacer las Transiciones y los estados se usa el siguiente prompt con la IA: "Crea en MsPacManInput todas las funciones necesarias para realizar correctamente cada Transition según se encuentra descrita en su toString. Además, para la función de mirar fantasmas por delante aplica la lectura de caminos en dos cruces que está implementada en la práctica 1".
+
 Después se usó la IA para crear la lógica de cada estado con el siguiente prompt: 
 "Para todo lo que voy a escribir puedes coger métodos de la práctica 1
 
@@ -62,7 +62,7 @@ Ghosts3: 3716.133333333333 +- 92.50300634884728
 
 Como las puntuaciones son inferiores contra todos los enemigos y las desviaciones son más altas contra todos, sabemos que no hay mejora.
 
-##Domingo 19:
+
 
 
 # Fantasmas:

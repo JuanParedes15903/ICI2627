@@ -1,9 +1,9 @@
-package es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV;
+package es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas;
 
 import java.util.EnumMap;
 import es.ucm.fdi.ici.Action;
-import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.actions.*;
-import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.transitions.*;
+import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas.transitions.*;
+import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas.actions.*;
 import es.ucm.fdi.ici.fsm.CompoundState;
 import es.ucm.fdi.ici.fsm.FSM;
 import es.ucm.fdi.ici.fsm.SimpleState;
@@ -13,11 +13,11 @@ import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-public class GhostFSMController extends GhostController {
+public class GhostFSMControllerV0 extends GhostController {
 
     private final EnumMap<GHOST, FSM> fsms;
 
-    public GhostFSMController() {
+    public GhostFSMControllerV0() {
         this.fsms = new EnumMap<>(GHOST.class);
         for (GHOST ghost : GHOST.values()) {
             this.fsms.put(ghost, buildFSM(ghost));

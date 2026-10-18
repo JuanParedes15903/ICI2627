@@ -1,4 +1,4 @@
-package es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV;
+package es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas;
 
 import es.ucm.fdi.ici.Input;
 import pacman.game.Constants.GHOST;

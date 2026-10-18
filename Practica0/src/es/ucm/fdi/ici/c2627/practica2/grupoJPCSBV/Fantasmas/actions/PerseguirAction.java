@@ -1,7 +1,7 @@
-package es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.actions;
+package es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas.actions;
 
 import es.ucm.fdi.ici.Action;
-import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.GhostInput;
+import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas.GhostInput;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;

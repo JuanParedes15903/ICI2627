@@ -1,11 +1,11 @@
-package es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV;
+package es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas;
 
 import es.ucm.fdi.ici.Input;
 import pacman.game.Constants.GHOST;
 import pacman.game.Game;
 import java.util.EnumMap;
 
-public class GhostInput extends Input {
+public class GhostInputV0 extends Input {
 
     private static final EnumMap<GHOST, Integer> tiempoPersiguiendo = new EnumMap<>(GHOST.class);
     static {
@@ -25,7 +25,7 @@ public class GhostInput extends Input {
     private boolean debeDejarDePerseguir;
     private boolean persecucionPermitida;
 
-    public GhostInput(GHOST ghost, Game game) {
+    public GhostInputV0(GHOST ghost, Game game) {
         super(game);         
         this.ghost = ghost;   
         parseInput();         
