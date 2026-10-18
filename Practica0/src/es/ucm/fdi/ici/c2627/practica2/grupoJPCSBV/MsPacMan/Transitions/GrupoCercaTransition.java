@@ -16,7 +16,7 @@ public class GrupoCercaTransition implements Transition {
     @Override
     public boolean evaluate(Input in) {
         MsPacManInput input = (MsPacManInput) in;
-        return input.getPildorasDePoder() > 0 && input.amenazasA(radio) >= cuantos;
+        return input.getFantasmasCercaPorDetras() >= cuantos;
     }
 
     @Override

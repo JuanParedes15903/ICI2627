@@ -4,17 +4,16 @@ import es.ucm.fdi.ici.Action;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-public class EvitarCaminosConFantasmas implements Action{
+public class BuscarCaminosConPildorasSegurosAction implements Action{
 
 	@Override
 	public String getActionId() {
-		return "Evitar caminos por los que vienen fantasmas";
+		return "Buscar caminos con píldoras más seguros a futuro";
 	}
 
 	@Override
 	public MOVE execute(Game game) {
-		// TODO Auto-generated method stub
-		return null;
+		return ActionSupport.moveTowardsSafePill(game);
 	}
 
 }

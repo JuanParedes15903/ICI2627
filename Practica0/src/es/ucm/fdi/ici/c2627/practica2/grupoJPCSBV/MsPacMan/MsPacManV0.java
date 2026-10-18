@@ -17,44 +17,62 @@ public class MsPacManV0 extends PacmanController {
 	public MsPacManV0() {
 		setName("MsPacMan JPCSBV");
 
-		// 1. La máquina de dentro, completa y con su estado inicial
-		
-		  comer = new FSM("Comer"); 
-		  SimpleState pildora = new SimpleState(new PildoraCercanaAction());
-		  SimpleState poder = new SimpleState(new PildoraDePoderAction());
-		  comer.add(pildora, new GrupoCercaTransition(40, 2), poder); 
-		  comer.add(poder, new GrupoDisueltoTransition(40), pildora); 
-		  comer.ready(pildora);
-		 
-		  // 2. Envuelta en un estado, se usa como cualquier otro CompoundState
-		  comerState = new CompoundState("Comer", comer); 
-		  SimpleState huir = new SimpleState(new HuirAction());
-		  
-		  fsm = new FSM("MsPacMan"); 
-		  fsm.add(comerState, new AmenazaCercaTransition(12), huir); // sale de los dos de dentro 
-		  fsm.add(huir, new AmenazaLejosTransition(20), comerState); 
-		  fsm.ready(comerState);
-		
+		estandar = new FSM("Estandar");
+		SimpleState masPildorasSinPoder = new SimpleState(new BuscarCaminosConMasPildorasSinPoderAction());
+		SimpleState caminosConPoder = new SimpleState(new BuscarCaminosPPillAction());
+		SimpleState BuscarCaminosConPildorasSeguros = new SimpleState(new BuscarCaminosConPildorasSegurosAction());
+		SimpleState AcercarseAFantasmas = new SimpleState(new AcercarseAFantasmasAction());
 
-		estandar= new FSM("Estandar"); 
-		SimpleState masPildorasSinPoder=new SimpleState(new BuscarCaminosConMasPildorasSinPoder());
-		SimpleState caminosConPoder=new SimpleState(new BuscarCaminosPPill());
-		SimpleState BuscarCaminosConPildorasSeguros = new SimpleState(new BuscarCaminosConPildorasSeguros());
-		SimpleState AcercarseAFantasmas = new SimpleState(new AcercarseAFantasmas());
+		estandar.add(BuscarCaminosConPildorasSeguros, new TodasLasPildorasBloqueadasTransition(), AcercarseAFantasmas);
+		estandar.add(AcercarseAFantasmas, new AlgunaPildoraDesbloqueadaTransition(), BuscarCaminosConPildorasSeguros);
+		estandar.add(masPildorasSinPoder, new GrupoCercaTransition(40, 2), caminosConPoder);
+		estandar.add(caminosConPoder, new GrupoDisueltoTransition(40), masPildorasSinPoder);
+		estandar.add(masPildorasSinPoder, new NoHayPPillsTransition(), BuscarCaminosConPildorasSeguros);
+		estandar.add(caminosConPoder, new NoHayPPillsTransition(), BuscarCaminosConPildorasSeguros);
+
+		estandar.ready(masPildorasSinPoder);
+
+		CompoundState estandarState = new CompoundState("Estandar", estandar);
+
+		huir = new FSM("Huir");
+		SimpleState evitarFantasmas = new SimpleState(new EvitarCaminosConFantasmasAction());
+		SimpleState huirHaciaPildoras = new SimpleState(new HuirHaciaPildorasAction());
+		SimpleState irAPPill = new SimpleState(new IrAPPillAction());
+
+		huir.add(evitarFantasmas, new NoHayPPillsTransition(), huirHaciaPildoras);
+		huir.add(evitarFantasmas, new GrupoCercaTransition(40, 2), irAPPill);
+		huir.add(huirHaciaPildoras, new CaminoAPildorasDePoderBloqueadosTransition(), evitarFantasmas);
+		huir.add(irAPPill, new CaminoAPildorasDePoderBloqueadosTransition(), evitarFantasmas);
+
+		huir.ready(evitarFantasmas);
+
+		CompoundState huirState = new CompoundState("Huir", huir);
+
+		SimpleState perseguirComestibles = new SimpleState(new PerseguirComestiblesAction());
+
+		fsm = new FSM("MsPacMan");
 		
-		estandar.add(BuscarCaminosConPildorasSeguros, CaminoAPildoraBloqueadoTransition(), AcercarseAFantasmas);
-		estandar.add(AcercarseAFantasmas, null, BuscarCaminosConPildorasSeguros);
-		
+		fsm.add(huirState, new HayMasComestiblesQueNoComestiblesTransition(), perseguirComestibles);
+		fsm.add(huirState, new NoHayFantasmasPorDelantetransition(), estandarState);
+		fsm.add(estandarState, new HayMasComestiblesQueNoComestiblesTransition(), perseguirComestibles);
+		fsm.add(estandarState, new HayFantasmasPorDelanteTransition(), huirState);
+		fsm.add(perseguirComestibles, new HayFantasmasPorDelanteYMasNoComestiblesQueComestibles(), huirState);
+		fsm.add(perseguirComestibles, new NoHayFantasmasPorDelanteYMasNoComestiblesQueComestibles(), estandarState);
+		fsm.ready(estandarState);
 	}
 
 	@Override
 	public void preCompute(String opponent) {
 		fsm.reset();
-		comer.reset(); // reset() no llama a stop(): la de dentro no se entera sola
+		estandar.reset(); // reset() no llama a stop(): la de dentro no se entera sola
+		huir.reset();
 	}
 
 	@Override
 	public MOVE getMove(Game game, long timeDue) {
-		return fsm.run(new MsPacManInput(game));
+		if (game.isJunction(game.getPacmanCurrentNodeIndex())) { // Solo hace decisiones si está en un cruce
+			return fsm.run(new MsPacManInput(game));
+		}
+		else return null;
 	}
 }

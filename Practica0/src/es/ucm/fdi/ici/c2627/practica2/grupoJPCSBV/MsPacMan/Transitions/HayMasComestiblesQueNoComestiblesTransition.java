@@ -10,10 +10,11 @@ public class HayMasComestiblesQueNoComestiblesTransition implements Transition{
 	@Override
 	public boolean evaluate(Input in) {
 		MsPacManInput input = (MsPacManInput) in;
-		return in.
+		return input.getMasComestiblesQueNoComestibles();
 	}
-	 @Override
-	    public String toString() {
-	        return "Hay más comestibles que no comestibles";
-	    }
+
+	@Override
+	public String toString() {
+		return "Hay más comestibles que no comestibles";
+	}
 }	

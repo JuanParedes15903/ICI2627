@@ -4,17 +4,16 @@ import es.ucm.fdi.ici.Action;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-public class BuscarCaminosConMasPildorasSinPoder implements Action{
+public class BuscarCaminosPPillAction implements Action{
 
 	@Override
 	public String getActionId() {
-		return "Buscar caminos con más píldoras evitando las de poder";
+		return "Buscar caminos con píldoras de poder";
 	}
 
 	@Override
 	public MOVE execute(Game game) {
-		// TODO Auto-generated method stub
-		return null;
+		return ActionSupport.moveTowardsPowerPill(game, true);
 	}
 
 }

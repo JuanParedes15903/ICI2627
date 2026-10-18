@@ -4,17 +4,16 @@ import es.ucm.fdi.ici.Action;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
-public class PerseguirComestibles implements Action{
+public class BuscarCaminosConMasPildorasSinPoderAction implements Action{
 
 	@Override
 	public String getActionId() {
-		return "Perseguir fantasmas comestibles";
+		return "Buscar caminos con más píldoras evitando las de poder";
 	}
 
 	@Override
 	public MOVE execute(Game game) {
-		// TODO Auto-generated method stub
-		return null;
+		return ActionSupport.moveAlongPillRichPath(game);
 	}
 
 }

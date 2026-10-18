@@ -13,8 +13,7 @@ public class HuirHaciaPildorasAction implements Action {
 
 	@Override
 	public MOVE execute(Game game) {
-		// TODO Auto-generated method stub
-		return null;
+		return ActionSupport.moveAwayFromGhosts(game, true);
 	}
 	
 }
