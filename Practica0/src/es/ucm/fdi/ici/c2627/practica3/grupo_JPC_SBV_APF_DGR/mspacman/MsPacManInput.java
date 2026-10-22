@@ -1,4 +1,4 @@
-package es.ucm.fdi.ici.c2627.practica3.grupoYY.mspacman;
+package es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.mspacman;
 
 import java.util.ArrayList;
 import java.util.Collection;

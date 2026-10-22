@@ -11,8 +11,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.Ghosts;
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.MsPacMan;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.Ghosts;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.MsPacMan;
 import pacman.controllers.GhostController;
 import pacman.controllers.PacmanController;
 import pacman.game.Game;

@@ -1,4 +1,4 @@
-package es.ucm.fdi.ici.c2627.practica3.grupoYY.mspacman.actions;
+package es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.mspacman.actions;
 
 import es.ucm.fdi.ici.rules.RulesAction;
 import jess.Fact;

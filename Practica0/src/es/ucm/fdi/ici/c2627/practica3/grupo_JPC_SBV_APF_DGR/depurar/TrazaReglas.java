@@ -1,4 +1,4 @@
-package es.ucm.fdi.ici.c2627.practica3.grupoYY.depurar;
+package es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.depurar;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

@@ -1,12 +1,12 @@
-package es.ucm.fdi.ici.c2627.practica3.grupoYY;
+package es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR;
 
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.ghosts.GhostsInput;
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.ghosts.actions.HuirAction;
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.ghosts.actions.PerseguirAction;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.ghosts.GhostsInput;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.ghosts.actions.HuirAction;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.ghosts.actions.PerseguirAction;
 import es.ucm.fdi.ici.rules.RuleEngine;
 import es.ucm.fdi.ici.rules.RulesAction;
 import pacman.controllers.GhostController;

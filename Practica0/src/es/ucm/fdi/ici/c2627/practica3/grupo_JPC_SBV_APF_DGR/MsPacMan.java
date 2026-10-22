@@ -1,12 +1,12 @@
-package es.ucm.fdi.ici.c2627.practica3.grupoYY;
+package es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR;
 
 import java.util.HashMap;
 
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.mspacman.MsPacManInput;
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.mspacman.actions.ComerAction;
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.mspacman.actions.HuirAction;
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.mspacman.actions.IrAPPillAction;
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.mspacman.actions.PerseguirAction;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.mspacman.MsPacManInput;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.mspacman.actions.ComerAction;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.mspacman.actions.HuirAction;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.mspacman.actions.IrAPPillAction;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.mspacman.actions.PerseguirAction;
 import es.ucm.fdi.ici.rules.RuleEngine;
 import es.ucm.fdi.ici.rules.RulesAction;
 import pacman.controllers.PacmanController;

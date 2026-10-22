@@ -1,5 +1,5 @@
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.MsPacMan;
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.depurar.TrazaReglas;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.MsPacMan;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.depurar.TrazaReglas;
 import pacman.Executor;
 
 /** Una partida en pantalla, con la traza de las reglas de Ms. Pac-Man en la consola. */
