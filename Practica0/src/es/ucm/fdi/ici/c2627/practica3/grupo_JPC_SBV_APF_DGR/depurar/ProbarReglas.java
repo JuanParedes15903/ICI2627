@@ -12,7 +12,7 @@ import jess.Rete;
  */
 public class ProbarReglas {
 
-    static final String REGLAS = "es/ucm/fdi/ici/c2627/practica3/grupoYY/mspacman-v1.clp";
+    static final String REGLAS = "es/ucm/fdi/ici/c2627/practica3/grupo_JPC_SBV_APF_DGR/mspacman-v1.clp";
     static int fallos = 0;
 
     public static void main(String[] args) throws JessException {

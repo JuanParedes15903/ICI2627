@@ -1,8 +1,5 @@
-import es.ucm.fdi.ici.c2627.practica0.grupoIndividual.*;
-
-
-import es.ucm.fdi.ici.c2627.practica1.grupoJPCSBV.*;
-import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.MsPacMan.*;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.Ghosts;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.MsPacMan;
 import es.ucm.fdi.ici.rivales.*;
 import pacman.Executor;
 import pacman.controllers.GhostController;
@@ -11,12 +8,12 @@ import pacman.game.util.Stats;
 
 public class ExecutorTest {
 
-    private static final boolean VER = false;   // true: una partida mirándola
+    private static final boolean VER = true;   // true: una partida mirándola
     private static final int     N   = 300;     // false: N partidas midiendo
 
     public static void main(String[] args) {
-        PacmanController pacMan = new MsPacManV2();
-        GhostController  ghosts = new GhostsBasico();
+        PacmanController pacMan = new MsPacMan();
+        GhostController  ghosts = new Ghosts();
 
         Executor executor = new Executor.Builder()
                 .setTickLimit(4000)

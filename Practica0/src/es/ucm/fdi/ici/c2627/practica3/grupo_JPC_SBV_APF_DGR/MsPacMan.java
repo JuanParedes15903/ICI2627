@@ -15,7 +15,7 @@ import pacman.game.Game;
 
 public class MsPacMan extends PacmanController {
 
-    private static final String RULES_PATH = "es/ucm/fdi/ici/c2627/practica3/grupoYY/";
+    private static final String RULES_PATH = "es/ucm/fdi/ici/c2627/practica3/grupo_JPC_SBV_APF_DGR/";
 
     private final RuleEngine motor;
     private final UltimaAccion ultima = new UltimaAccion();

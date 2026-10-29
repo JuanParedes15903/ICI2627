@@ -16,12 +16,12 @@ import pacman.game.Game;
 
 public class Ghosts extends GhostController {
 
-    private static final String RULES_PATH = "es/ucm/fdi/ici/c2627/practica3/grupoYY/";
+    private static final String RULES_PATH = "es/ucm/fdi/ici/c2627/practica3/grupo_JPC_SBV_APF_DGR/";
 
     private final EnumMap<GHOST, RuleEngine> motores = new EnumMap<>(GHOST.class);
 
     public Ghosts() {
-        this("ghosts-v1.clp");                    // la versión que va al concurso
+        this("ghosts-v0.clp");                    // la versión que va al concurso
     }
 
     public Ghosts(String ficheroReglas) {
