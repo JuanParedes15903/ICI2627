@@ -39,8 +39,9 @@ public class Comparar {
     static final Map<String, Supplier<PacmanController>> RIVALES_PACMANS = Rivales.pacmans();
 
     static {
-        MIS_PACMANS.put("v0", () -> new MsPacMan("mspacman-v0.clp"));     // las seis primeras reglas
-        MIS_PACMANS.put("v1", () -> new MsPacMan("mspacman-v1.clp"));     // con rematar
+        MIS_PACMANS.put("v1", () -> new MsPacMan("mspacman-v1.clp"));
+        MIS_PACMANS.put("v3", () -> new MsPacMan("mspacman-v3.clp"));
+        MIS_PACMANS.put("v4", () -> new MsPacMan("mspacman-v4.clp"));
 
         MIS_FANTASMAS.put("v0", () -> new Ghosts("ghosts-v0.clp"));       // G1 y G2
         MIS_FANTASMAS.put("v1", () -> new Ghosts("ghosts-v1.clp"));       // con G3

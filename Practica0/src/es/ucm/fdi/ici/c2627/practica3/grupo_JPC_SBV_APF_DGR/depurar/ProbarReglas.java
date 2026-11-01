@@ -1,6 +1,8 @@
 package es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.depurar;
 
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import jess.Fact;
 import jess.JessException;
@@ -12,44 +14,139 @@ import jess.Rete;
  */
 public class ProbarReglas {
 
-    static final String REGLAS = "es/ucm/fdi/ici/c2627/practica3/grupo_JPC_SBV_APF_DGR/mspacman-v1.clp";
+    static final String RUTA = "es/ucm/fdi/ici/c2627/practica3/grupo_JPC_SBV_APF_DGR/mspacman/";
     static int fallos = 0;
 
     public static void main(String[] args) throws JessException {
+        for (String version : new String[] { "mspacman-v3.clp", "mspacman-v4.clp" }) {
+            System.out.println("\n===== " + version);
+            probar(version, version.equals("mspacman-v3.clp"));
+        }
+        System.out.println(fallos == 0 ? "\nTodos los casos bien." : "\n" + fallos + " casos MAL.");
+    }
+
+    static void probar(String fichero, boolean conComboListo) throws JessException {
         Rete jess = new Rete();
-        jess.batch(REGLAS);
+        jess.batch(RUTA + fichero);
         jess.eval("(watch rules)");           // Jess escribe cada regla que dispara
 
-        caso(jess, "nada cerca: come", "comer",
-                "(MSPACMAN (distFantasma 80) (distPPill 40) (ultima comer))");
+        caso(jess, "Pastilla mas cercana", "PastillaMasCercana",
+                mspacman());
 
-        caso(jess, "fantasma a 15: huye", "huir",
-                "(MSPACMAN (distFantasma 15) (distPPill 40) (ultima comer))");
+        caso(jess, "Pasillo con mas pastillas", "ComerPasilloConMasPastillas",
+                mspacman("pasillosConMismasPastillas false"));
 
-        caso(jess, "a 25 sin venir huyendo: come", "comer",
-                "(MSPACMAN (distFantasma 25) (distPPill 40) (ultima comer))");
+        caso(jess, "Ultimas pastillas", "IrAPorLasUltimasPastillas",
+                mspacman("pasillosConMismasPastillas false", "quedanPocosPasillos true", "pasillosConPastillas 4"));
 
-        caso(jess, "a 25 viniendo de huir: sigue huyendo", "huir",
-                "(MSPACMAN (distFantasma 25) (distPPill 40) (ultima huir))");
+        caso(jess, "Esperar al combo", "EsperarPastillaDePoderHastaCombo",
+                mspacman("pasillosConMismasPastillas false", "enCruceDePastillaDePoder true"));
 
-        caso(jess, "fantasma a 15 y PPill a 5: a la PPill", "irAPPill",
-                "(MSPACMAN (distFantasma 15) (distPPill 5) (ultima huir))");
+        if (conComboListo)
+            caso(jess, "Combo: comerse la pastilla", "IrAPorPastillaDePoder",
+                    mspacman("pasillosConMismasPastillas false", "enCruceDePastillaDePoder true", "hayCombo true"));
+        else
+            caso(jess, "Combo: seguir comiendo", "ComerPasilloConMasPastillas",
+                    mspacman("pasillosConMismasPastillas false", "enCruceDePastillaDePoder true", "hayCombo true"));
 
-        caso(jess, "comestible a 30 pero un peligroso a 15: huye", "huir",
-                "(FANTASMA (nombre PINKY) (comestible true) (distancia 30) (tiempo 100))",
-                "(FANTASMA (nombre SUE) (comestible false) (distancia 15) (tiempo 0))",
-                "(MSPACMAN (distFantasma 15) (distPPill 1000) (ultima comer))");
+        caso(jess, "Perseguir comestible", "PerseguirFantasmaComestibleMasCercano",
+                mspacman("pasillosConMismasPastillas false"),
+                fantasma("BLINKY", "comestible true", "alcanzable true", "distancia 10", "tiempo 100"));
 
-        caso(jess, "comestible a 30 con tiempo: lo caza", "perseguir",
-                "(MSPACMAN (distFantasma 1000) (distPPill 1000) (ultima comer))",
-                "(FANTASMA (nombre PINKY) (comestible true) (distancia 30) (tiempo 100))");
+        caso(jess, "Comestible lejos: no perseguir", "ComerPasilloConMasPastillas",
+                mspacman("pasillosConMismasPastillas false"),
+                fantasma("BLINKY", "comestible true", "distancia 80", "tiempo 20"));
 
-        caso(jess, "comestible a 5 y otro peligroso a 15: lo remata", "perseguir",
-                "(MSPACMAN (distFantasma 15) (distPPill 1000) (ultima huir))",
-                "(FANTASMA (nombre PINKY) (comestible true) (distancia 5) (tiempo 100))",
-                "(FANTASMA (nombre SUE) (comestible false) (distancia 15) (tiempo 0))");
+        caso(jess, "Interceptar comestible", "InterceptarFantasmaComestible",
+                mspacman("intercepcionPosible true"),
+                fantasma("BLINKY", "comestible true", "alcanzable true", "distancia 10", "tiempo 100"));
 
-        System.out.println(fallos == 0 ? "\nTodos los casos bien." : "\n" + fallos + " casos MAL.");
+        caso(jess, "Cazar en cadena", "CazarEnCadena",
+                mspacman("intercepcionPosible true", "cadenaPosible true"),
+                fantasma("BLINKY", "comestible true", "alcanzable true", "distancia 10", "tiempo 100"),
+                fantasma("PINKY", "comestible true", "alcanzable true", "distancia 20", "tiempo 100"));
+
+        caso(jess, "Comestible con amenaza: huir", "HuirDelFantasmaMasCercano",
+                mspacman("cadenaPosible true"),
+                fantasma("BLINKY", "comestible true", "alcanzable true", "distancia 10", "tiempo 100"),
+                fantasma("INKY", "amenaza true", "distancia 8"));
+
+        caso(jess, "Huir del mas cercano", "HuirDelFantasmaMasCercano",
+                mspacman("pasillosConMismasPastillas false"),
+                fantasma("INKY", "amenaza true", "distancia 8"));
+
+        caso(jess, "Cerca sin amenaza: no huir", "PastillaMasCercana",
+                mspacman(),
+                fantasma("INKY", "distancia 5"));
+
+        caso(jess, "Huir de varios", "HuirDeVariosFantasmas",
+                mspacman(),
+                fantasma("INKY", "amenaza true", "distancia 8"),
+                fantasma("SUE", "amenaza true", "distancia 12"));
+
+        caso(jess, "Correr a la pastilla de poder", "IrAPorPastillaDePoder",
+                mspacman("llegaAntesAPastillaDePoder true"),
+                fantasma("INKY", "amenaza true", "distancia 8"),
+                fantasma("SUE", "amenaza true", "distancia 12"));
+
+        caso(jess, "Pastilla unica salida", "HuirHaciaPastillaDePoder",
+                mspacman("pastillaUnicaSalida true", "movimientosSeguros 1"),
+                fantasma("INKY", "amenaza true", "distancia 8"));
+
+        caso(jess, "Encerrada: huir hacia la pastilla", "HuirHaciaPastillaDePoder",
+                mspacman("riesgoDeEncierro true", "llegaAntesAPastillaDePoder true", "movimientosSeguros 1"),
+                fantasma("INKY", "amenaza true", "distancia 8"),
+                fantasma("SUE", "amenaza true", "distancia 12"));
+
+        caso(jess, "Muerte segura", "MuerteSegura",
+                mspacman("riesgoDeEncierro true", "llegaAntesAPastillaDePoder true", "pastillaUnicaSalida true",
+                        "movimientosSeguros 0"),
+                fantasma("INKY", "amenaza true", "distancia 8"),
+                fantasma("SUE", "amenaza true", "distancia 12"));
+    }
+
+    static String fantasma(String nombre, String... cambios) {
+        Map<String, String> slots = new LinkedHashMap<>();
+        slots.put("nombre", nombre);
+        slots.put("comestible", "false");
+        slots.put("distancia", "100");
+        slots.put("tiempo", "0");
+        slots.put("amenaza", "false");
+        slots.put("alcanzable", "false");
+        return hecho("FANTASMA", slots, cambios);
+    }
+
+    static String mspacman(String... cambios) {
+        Map<String, String> slots = new LinkedHashMap<>();
+        slots.put("pastillaDePoderComida", "false");
+        slots.put("poderActivo", "false");
+        slots.put("fantasmasComestiblesAlcanzables", "0");
+        slots.put("enPeligro", "false");
+        slots.put("enCruceDePastillaDePoder", "false");
+        slots.put("hayCombo", "false");
+        slots.put("pasillosConMismasPastillas", "true");
+        slots.put("pasillosConPastillas", "20");
+        slots.put("quedanPocosPasillos", "false");
+        slots.put("cadenaPosible", "false");
+        slots.put("intercepcionPosible", "false");
+        slots.put("fantasmasCerca", "0");
+        slots.put("riesgoDeEncierro", "false");
+        slots.put("pastillaUnicaSalida", "false");
+        slots.put("llegaAntesAPastillaDePoder", "false");
+        slots.put("pastillaDePoderCerca", "false");
+        slots.put("movimientosSeguros", "2");
+        return hecho("MSPACMAN", slots, cambios);
+    }
+
+    static String hecho(String plantilla, Map<String, String> slots, String... cambios) {
+        for (String cambio : cambios) {
+            String[] partes = cambio.split(" ");
+            if (!slots.containsKey(partes[0])) throw new IllegalArgumentException("Slot desconocido: " + partes[0]);
+            slots.put(partes[0], partes[1]);
+        }
+        StringBuilder hecho = new StringBuilder("(" + plantilla);
+        slots.forEach((slot, valor) -> hecho.append(" (").append(slot).append(' ').append(valor).append(')'));
+        return hecho.append(')').toString();
     }
 
     static void caso(Rete jess, String nombre, String esperada, String... hechos) throws JessException {
