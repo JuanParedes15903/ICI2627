@@ -1,18 +1,18 @@
-package es.ucm.fdi.ici.c2627.practica3.grupoYY;
+package es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR;
 
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.ghosts.GhostsInput;
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.ghosts.actions.HuirAction;
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.ghosts.actions.PerseguirAction;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.ghosts.GhostsInput;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.ghosts.actions.HuirAction;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.ghosts.actions.PerseguirAction;
 // Añadimos los imports de las nuevas acciones
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.ghosts.actions.InterceptarAction;
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.ghosts.actions.PatrullarAction;
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.ghosts.actions.EmboscarAction;
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.ghosts.actions.SalirCarcelAction;
-import es.ucm.fdi.ici.c2627.practica3.grupoYY.ghosts.actions.HuirDispersoAction;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.ghosts.actions.InterceptarAction;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.ghosts.actions.PatrullarAction;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.ghosts.actions.EmboscarAction;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.ghosts.actions.SalirCarcelAction;
+import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.ghosts.actions.HuirDispersoAction;
 
 import es.ucm.fdi.ici.rules.RuleEngine;
 import es.ucm.fdi.ici.rules.RulesAction;
@@ -23,14 +23,14 @@ import pacman.game.Game;
 
 public class Ghosts extends GhostController {
 
-    private static final String RULES_PATH = "es/ucm/fdi/ici/c2627/practica3/grupoYY/";
+    private static final String RULES_PATH = "es/ucm/fdi/ici/c2627/practica3/grupo_JPC_SBV_APF_DGR/";
 
     private final EnumMap<GHOST, RuleEngine> motores = new EnumMap<>(GHOST.class);
 
     public Ghosts() {
         // OJO: Asegúrate de que el archivo se llame exactamente así.
         // En tus errores anteriores ponía "GhostRoles.clp" y aquí pone "GhostsRolesv1.clp".
-        this("GhostsRolesv1.clp");                    
+        this("GhostsRolesv2.clp");                    
     }
 
     public Ghosts(String ficheroReglas) {
