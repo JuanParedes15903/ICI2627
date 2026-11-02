@@ -2,64 +2,66 @@ Comparación GhostsRolesv1 y GhostsRolesv2
 
 == puntos: v2 frente a v1 (menos es mejor) ==
 rival                        v1               v2         D   2·ET_D
-Basico                1931 ± 40        1861 ± 41       -69      114  ruido
-Intermedio           5293 ± 113       4974 ± 118      -319      326  ruido
-Avanzado              8114 ± 75       7697 ± 106      -417      260  mejor
+Basico                1959 ± 39        1871 ± 41       -88      113  ruido
+Intermedio           5154 ± 116       4941 ± 111      -213      321  ruido
+Avanzado              8095 ± 79       7646 ± 102      -449      258  mejor
 ------------------------------------------------------------------------
-MEDIA (3)             5112 ± 47        4844 ± 54      -268      144  mejor
+MEDIA (3)             5069 ± 49        4819 ± 52      -250      142  mejor
 v2 es mejor contra 1 rivales, peor contra 0 y no se distingue contra 2.
 
 == turnos por vida: v2 frente a v1 (menos es mejor) ==
 rival                        v1               v2         D   2·ET_D
-Basico                 685 ± 46         631 ± 47       -53      131  ruido
-Intermedio            2527 ± 77        2183 ± 80      -344      223  mejor
-Avanzado              3397 ± 59        3050 ± 71      -347      184  mejor
+Basico                 722 ± 51         664 ± 46       -58      138  ruido
+Intermedio            2357 ± 81        2120 ± 80      -238      227  mejor
+Avanzado              3290 ± 63        3026 ± 68      -264      185  mejor
 ------------------------------------------------------------------------
-MEDIA (3)             2203 ± 36        1955 ± 39      -248      106  mejor
+MEDIA (3)             2123 ± 38        1936 ± 38      -187      108  mejor
 v2 es mejor contra 2 rivales, peor contra 0 y no se distingue contra 1.
 
 == fantasmas comidos: v2 frente a v1 (menos es mejor) ==
 rival                        v1               v2         D   2·ET_D
-Basico              1,74 ± 0,07      1,69 ± 0,07     -0,05     0,19  ruido
-Intermedio          5,42 ± 0,15      5,15 ± 0,16     -0,27     0,44  ruido
-Avanzado            9,94 ± 0,12      9,40 ± 0,15     -0,54     0,38  mejor
+Basico              1,88 ± 0,07      1,64 ± 0,07     -0,25     0,20  mejor
+Intermedio          5,34 ± 0,17      5,02 ± 0,15     -0,32     0,44  ruido
+Avanzado            9,96 ± 0,12      9,48 ± 0,14     -0,49     0,37  mejor
 ------------------------------------------------------------------------
-MEDIA (3)           5,70 ± 0,07      5,41 ± 0,08     -0,29     0,21  mejor
-v2 es mejor contra 1 rivales, peor contra 0 y no se distingue contra 2.
+MEDIA (3)           5,73 ± 0,07      5,38 ± 0,07     -0,35     0,20  mejor
+v2 es mejor contra 2 rivales, peor contra 0 y no se distingue contra 1.
 
-La segunda versión mejora tanto en supervivencia como en puntuación respecto a la primera contra rivales más avanzados.
+La segunda versión mejora tanto en supervivencia como en puntuación respecto a la primera contra rivales más avanzados, y además consigue acabar con pacman más rápido. Por esto la versión con la que nos quedamos es V2.
 
 
 Comparación GhostRolesv2 y GhostRolesv3:
 
 == puntos: v3 frente a v2 (menos es mejor) ==
 rival                        v2               v3         D   2·ET_D
-Basico                1939 ± 45        1883 ± 46       -55      128  ruido
-Intermedio           5263 ± 110       5067 ± 113      -197      316  ruido
-Avanzado              7894 ± 82        7984 ± 94       +90      249  ruido
+Basico                1871 ± 41        2233 ± 54      +362      135  peor
+Intermedio           4941 ± 111       4154 ± 114      -787      318  mejor
+Avanzado             7646 ± 102       7877 ± 117      +231      311  ruido
 ------------------------------------------------------------------------
-MEDIA (3)             5032 ± 48        4978 ± 51       -54      141  ruido
-v3 es mejor contra 0 rivales, peor contra 0 y no se distingue contra 3.
+MEDIA (3)             4819 ± 52        4755 ± 57       -65      155  ruido
+v3 es mejor contra 1 rivales, peor contra 1 y no se distingue contra 1.
+
 
 == turnos por vida: v3 frente a v2 (menos es mejor) ==
 rival                        v2               v3         D   2·ET_D
-Basico                 634 ± 41         677 ± 48       +43      126  ruido
-Intermedio            2386 ± 76        2331 ± 81       -55      222  ruido
-Avanzado              3273 ± 66        3063 ± 70      -210      192  mejor
+Basico                 664 ± 46         531 ± 41      -133      123  mejor
+Intermedio            2120 ± 80        1791 ± 79      -329      225  mejor
+Avanzado              3026 ± 68        2945 ± 72       -81      198  ruido
 ------------------------------------------------------------------------
-MEDIA (3)             2098 ± 36        2024 ± 39       -74      106  ruido
-v3 es mejor contra 1 rivales, peor contra 0 y no se distingue contra 2.
+MEDIA (3)             1936 ± 38        1756 ± 38      -181      108  mejor
+v3 es mejor contra 2 rivales, peor contra 0 y no se distingue contra 1.
+
 
 == fantasmas comidos: v3 frente a v2 (menos es mejor) ==
 rival                        v2               v3         D   2·ET_D
-Basico              1,81 ± 0,08      1,72 ± 0,08     -0,09     0,22  ruido
-Intermedio          5,33 ± 0,15      5,34 ± 0,16     +0,01     0,44  ruido
-Avanzado            9,73 ± 0,12      9,90 ± 0,14     +0,17     0,37  ruido
+Basico              1,64 ± 0,07      2,20 ± 0,09     +0,57     0,23  peor
+Intermedio          5,02 ± 0,15      4,10 ± 0,16     -0,93     0,43  mejor
+Avanzado            9,48 ± 0,14      9,92 ± 0,17     +0,44     0,43  peor
 ------------------------------------------------------------------------
-MEDIA (3)           5,62 ± 0,07      5,65 ± 0,08     +0,03     0,21  ruido
-v3 es mejor contra 0 rivales, peor contra 0 y no se distingue contra 3.
+MEDIA (3)           5,38 ± 0,07      5,41 ± 0,08     +0,03     0,22  ruido
+v3 es mejor contra 1 rivales, peor contra 2 y no se distingue contra 0.
 
-No hay una mejora notable.
+Al ser más agresivo, V3 consigue acabar antes con pacman pero esa agresividad hace que haya más fantasmas comidos y en algunos casos esto perjudica a la puntuación, por lo que nos quedamos con la V2.
 
 Se usó IA en el desarrollo de la primera versión, estos fueron los prompts usados en el orden en el que se utilizaron:
 

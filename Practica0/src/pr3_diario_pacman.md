@@ -1,7 +1,9 @@
 # **Diario Práctica 3 Grupo JPC\_SBV\_APF\_DGR**
 
-Integrantes: Adrián Prieto Fernández y Diego González del Castillo Ramírez de Arellano  
-Versión a concurso: MsPacMan con mspacman-v4.clp.
+Integrantes:Juan Paredes Cruz, Sergio Barbas Vázquez, Adrián Prieto Fernández y Diego González del Castillo Ramírez de Arellano  
+Versión a concurso: MsPacMan con mspacman-v4.clp y Ghosts con GhostsRolesv2.clp.
+
+#**MsPacMan**
 
 # **Ejecución**
 
@@ -239,3 +241,5 @@ esperarCombo y encerrada son las que menos se disparan, pero se disparan en toda
 
 Modelo: Claude Opus 5.5 (Claude Code), trabajando directamente sobre el repositorio.  
 Los prompts están en el archivo *prompts.md*.
+
+# **Ghosts**
