@@ -240,7 +240,7 @@ esperarCombo y encerrada son las que menos se disparan, pero se disparan en toda
 # **Uso de IA generativa**
 
 Modelo: Claude Opus 5.5 (Claude Code), trabajando directamente sobre el repositorio.  
-Los prompts están en el archivo *prompts.md*.
+Los prompts están en el archivo *p3_prompts_pacman.md*.
 
 # **Ghosts**
 # **Ejecución**
@@ -259,6 +259,8 @@ Métricas que usamos:
 * Veces que ocurre cada regla y veces que gana cada acción, con TrazaReglas.
 
 # **Versión v1: la máquina de estados de la Práctica 2 pasada a reglas**
+
+En esta primera versión se tradujeron los estados que teníamos en los fantasmas de la práctica 2 a lógica con reglas, lo que resultó en la asignación por roles que teníamos ateriormente haciéndose de forma nativa en Jess, una regla que define el comportamiento de los fantasmas al salir de la cárcel (modo neutral), otras dos que definen las condiciones para huir de ms pacman, haciendo que si se está muy cerca de ella la prioridad sea alejarse como sea, o que si se está lo suficientemente lejos, se huya de tal forma que los fantasmas se alejen entre sí también, para no facilitar que ms pacman pueda comerse varios fantasmas seguidos, y, por último, una regla preventiva que hace que los fantasmas no se acerquen a ms pacman si está a una cierta distancia de una PP.
 
 # **Versión v2**
 Se añaden dos reglas: ComestibleSeguro y finalSinPP. ComestibleSeguro se activa si el fantasma es comestible pero la vulnerabilidad se va a acabar antes de que pacman pueda llegar, por lo que deja de huir. FinalSinPP se activa cuando ya no quedan PP en el mapa, de esta forma los fantasmas pueden ser más agresivos sin miedo a que MsPacMan pueda comerles.
