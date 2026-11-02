@@ -243,3 +243,19 @@ Modelo: Claude Opus 5.5 (Claude Code), trabajando directamente sobre el reposito
 Los prompts están en el archivo *prompts.md*.
 
 # **Ghosts**
+# **Ejecución**
+# **Métricas**
+
+Medimos siempre con Comparar, contra los mismos rivales y con las mismas semillas, 300 partidas por rival:
+
+* Rivales: los tres MsPacMan de la wiki
+* Versión de partida: ghosts-v1 del ejemplo
+
+Métricas que usamos:
+
+* Media de puntos por partida y error típico.  
+* Turnos por vida.  
+* Fantasmas comidos por partida.  
+* Veces que ocurre cada regla y veces que gana cada acción, con TrazaReglas.
+
+# **Versión v1: la máquina de estados de la Práctica 2 pasada a reglas**
