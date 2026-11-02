@@ -259,3 +259,274 @@ Métricas que usamos:
 * Veces que ocurre cada regla y veces que gana cada acción, con TrazaReglas.
 
 # **Versión v1: la máquina de estados de la Práctica 2 pasada a reglas**
+
+# **Versión v2**
+Se añaden dos reglas: ComestibleSeguro y finalSinPP. ComestibleSeguro se activa si el fantasma es comestible pero la vulnerabilidad se va a acabar antes de que pacman pueda llegar, por lo que deja de huir. FinalSinPP se activa cuando ya no quedan PP en el mapa, de esta forma los fantasmas pueden ser más agresivos sin miedo a que MsPacMan pueda comerles.
+
+# **Tests**
+
+Comparar, 300 partidas por rival y las mismas semillas para las dos versiones.  
+
+== puntos: v2 frente a v1 (menos es mejor) ==
+rival                        v1               v2         D   2·ET_D
+Basico                1959 ± 39        1871 ± 41       -88      113  ruido
+Intermedio           5154 ± 116       4941 ± 111      -213      321  ruido
+Avanzado              8095 ± 79       7646 ± 102      -449      258  mejor
+------------------------------------------------------------------------
+MEDIA (3)             5069 ± 49        4819 ± 52      -250      142  mejor
+v2 es mejor contra 1 rivales, peor contra 0 y no se distingue contra 2.
+
+== turnos por vida: v2 frente a v1 (menos es mejor) ==
+rival                        v1               v2         D   2·ET_D
+Basico                 722 ± 51         664 ± 46       -58      138  ruido
+Intermedio            2357 ± 81        2120 ± 80      -238      227  mejor
+Avanzado              3290 ± 63        3026 ± 68      -264      185  mejor
+------------------------------------------------------------------------
+MEDIA (3)             2123 ± 38        1936 ± 38      -187      108  mejor
+v2 es mejor contra 2 rivales, peor contra 0 y no se distingue contra 1.
+
+== fantasmas comidos: v2 frente a v1 (menos es mejor) ==
+rival                        v1               v2         D   2·ET_D
+Basico              1,88 ± 0,07      1,64 ± 0,07     -0,25     0,20  mejor
+Intermedio          5,34 ± 0,17      5,02 ± 0,15     -0,32     0,44  ruido
+Avanzado            9,96 ± 0,12      9,48 ± 0,14     -0,49     0,37  mejor
+------------------------------------------------------------------------
+MEDIA (3)           5,73 ± 0,07      5,38 ± 0,07     -0,35     0,20  mejor
+v2 es mejor contra 2 rivales, peor contra 0 y no se distingue contra 1.
+
+La segunda versión mejora tanto en supervivencia como en puntuación respecto a la primera contra rivales más avanzados, y además consigue acabar con pacman más rápido. Por esto la versión con la que nos quedamos es V2.
+
+# **Traza de la V2**
+
+[BLINKY] 132 turnos. Veces que se dispara cada regla:
+       65  accionAcosador
+       15  accionBloqueador
+        0  accionCarcel   <-- NUNCA
+        6  accionDispersor
+       18  accionEmboscador
+       10  comestibleSeguro
+       27  finalSinPP
+       24  huirComestibleDisperso
+        4  huirComestiblePanico
+        4  huirDeLaPPill
+       65  rolAcosador
+       15  rolBloqueador
+       36  rolDispersor
+       36  rolEmboscador
+       41  seleccionar-mejor-accion
+[BLINKY] Veces que gana cada acción:
+       17  emboscar
+        8  huir
+       14  huir_disperso
+       12  interceptar
+        6  patrullar
+       75  perseguir
+[PINKY] 138 turnos. Veces que se dispara cada regla:
+       32  accionAcosador
+       48  accionBloqueador
+        0  accionCarcel   <-- NUNCA
+       24  accionDispersor
+       16  accionEmboscador
+        5  comestibleSeguro
+       26  finalSinPP
+       16  huirComestibleDisperso
+        2  huirComestiblePanico
+        5  huirDeLaPPill
+       32  rolAcosador
+       48  rolBloqueador
+      144  rolDispersor
+       32  rolEmboscador
+       36  seleccionar-mejor-accion
+[PINKY] Veces que gana cada acción:
+       10  emboscar
+        7  huir
+       11  huir_disperso
+       43  interceptar
+        5  patrullar
+       62  perseguir
+[INKY] 129 turnos. Veces que se dispara cada regla:
+       44  accionAcosador
+       31  accionBloqueador
+        0  accionCarcel   <-- NUNCA
+        9  accionDispersor
+       36  accionEmboscador
+        2  comestibleSeguro
+       32  finalSinPP
+        6  huirComestibleDisperso
+        3  huirComestiblePanico
+        5  huirDeLaPPill
+       44  rolAcosador
+       31  rolBloqueador
+       54  rolDispersor
+       72  rolEmboscador
+       39  seleccionar-mejor-accion
+[INKY] Veces que gana cada acción:
+       19  emboscar
+        8  huir
+        4  huir_disperso
+       25  interceptar
+        4  patrullar
+       69  perseguir
+[SUE] 111 turnos. Veces que se dispara cada regla:
+        4  accionAcosador
+       38  accionBloqueador
+        0  accionCarcel   <-- NUNCA
+       12  accionDispersor
+       28  accionEmboscador
+       12  comestibleSeguro
+       24  finalSinPP
+       28  huirComestibleDisperso
+        1  huirComestiblePanico
+        4  huirDeLaPPill
+        4  rolAcosador
+       38  rolBloqueador
+       72  rolDispersor
+       56  rolEmboscador
+       40  seleccionar-mejor-accion
+[SUE] Veces que gana cada acción:
+       22  emboscar
+        5  huir
+       16  huir_disperso
+       19  interceptar
+       11  patrullar
+       38  perseguir
+
+# **Versión v3**
+Se añaden dos reglas con dos acciones nuevas: CortarCaminoPP y Cerco. Esta versión es más agresiva respecto a las anteriores ya que hace que los fantasmas siempre estén más cerca de PacMan e intenten estar más agrupados a su alrededor.
+
+# **Tests**
+
+Comparación GhostRolesv2 y GhostRolesv3:
+
+== puntos: v3 frente a v2 (menos es mejor) ==
+rival                        v2               v3         D   2·ET_D
+Basico                1871 ± 41        2233 ± 54      +362      135  peor
+Intermedio           4941 ± 111       4154 ± 114      -787      318  mejor
+Avanzado             7646 ± 102       7877 ± 117      +231      311  ruido
+------------------------------------------------------------------------
+MEDIA (3)             4819 ± 52        4755 ± 57       -65      155  ruido
+v3 es mejor contra 1 rivales, peor contra 1 y no se distingue contra 1.
+
+
+== turnos por vida: v3 frente a v2 (menos es mejor) ==
+rival                        v2               v3         D   2·ET_D
+Basico                 664 ± 46         531 ± 41      -133      123  mejor
+Intermedio            2120 ± 80        1791 ± 79      -329      225  mejor
+Avanzado              3026 ± 68        2945 ± 72       -81      198  ruido
+------------------------------------------------------------------------
+MEDIA (3)             1936 ± 38        1756 ± 38      -181      108  mejor
+v3 es mejor contra 2 rivales, peor contra 0 y no se distingue contra 1.
+
+
+== fantasmas comidos: v3 frente a v2 (menos es mejor) ==
+rival                        v2               v3         D   2·ET_D
+Basico              1,64 ± 0,07      2,20 ± 0,09     +0,57     0,23  peor
+Intermedio          5,02 ± 0,15      4,10 ± 0,16     -0,93     0,43  mejor
+Avanzado            9,48 ± 0,14      9,92 ± 0,17     +0,44     0,43  peor
+------------------------------------------------------------------------
+MEDIA (3)           5,38 ± 0,07      5,41 ± 0,08     +0,03     0,22  ruido
+v3 es mejor contra 1 rivales, peor contra 2 y no se distingue contra 0.
+
+Al ser más agresivo, V3 consigue acabar antes con pacman pero esa agresividad hace que haya más fantasmas comidos y en algunos casos esto perjudica a la puntuación, por lo que nos quedamos con la V2.
+
+
+# **Traza de la V3**
+
+[BLINKY] 170 turnos. Veces que se dispara cada regla:
+       54  accionAcosador
+       36  accionBloqueador
+        0  accionCarcel   <-- NUNCA
+       12  accionDispersor
+       44  accionEmboscador
+      129  cerrarCerco
+       11  comestibleSeguro
+       24  cortarCaminoPP
+       36  finalSinPP
+       20  huirComestibleDisperso
+        4  huirComestiblePanico
+        7  huirDeLaPPill
+       54  rolAcosador
+       36  rolBloqueador
+       72  rolDispersor
+       88  rolEmboscador
+      207  seleccionar-mejor-accion
+[BLINKY] Veces que gana cada acción:
+       43  cerco
+       24  cortar_pp
+       11  huir
+        9  huir_disperso
+       83  perseguir
+[PINKY] 168 turnos. Veces que se dispara cada regla:
+       87  accionAcosador
+       31  accionBloqueador
+        0  accionCarcel   <-- NUNCA
+       18  accionDispersor
+       14  accionEmboscador
+      140  cerrarCerco
+        2  comestibleSeguro
+       10  cortarCaminoPP
+       34  finalSinPP
+       15  huirComestibleDisperso
+        3  huirComestiblePanico
+        2  huirDeLaPPill
+       87  rolAcosador
+       31  rolBloqueador
+      108  rolDispersor
+       28  rolEmboscador
+      188  seleccionar-mejor-accion
+[PINKY] Veces que gana cada acción:
+       48  cerco
+       10  cortar_pp
+        4  huir
+       14  huir_disperso
+       92  perseguir
+[INKY] 159 turnos. Veces que se dispara cada regla:
+       19  accionAcosador
+       50  accionBloqueador
+        0  accionCarcel   <-- NUNCA
+       29  accionDispersor
+       33  accionEmboscador
+      125  cerrarCerco
+       11  comestibleSeguro
+        2  cortarCaminoPP
+       36  finalSinPP
+       27  huirComestibleDisperso
+        1  huirComestiblePanico
+        6  huirDeLaPPill
+       19  rolAcosador
+       50  rolBloqueador
+      174  rolDispersor
+       66  rolEmboscador
+      180  seleccionar-mejor-accion
+[INKY] Veces que gana cada acción:
+       80  cerco
+        2  cortar_pp
+        7  huir
+       16  huir_disperso
+       54  perseguir
+[SUE] 145 turnos. Veces que se dispara cada regla:
+       19  accionAcosador
+       37  accionBloqueador
+        0  accionCarcel   <-- NUNCA
+       41  accionDispersor
+       26  accionEmboscador
+      118  cerrarCerco
+        6  comestibleSeguro
+       11  cortarCaminoPP
+       35  finalSinPP
+       19  huirComestibleDisperso
+        3  huirComestiblePanico
+        6  huirDeLaPPill
+       19  rolAcosador
+       37  rolBloqueador
+      246  rolDispersor
+       52  rolEmboscador
+      176  seleccionar-mejor-accion
+[SUE] Veces que gana cada acción:
+       55  cerco
+       11  cortar_pp
+        9  huir
+       13  huir_disperso
+       57  perseguir
+       
+Podemos ver que estas acciones nuevas eclipsan completamente a emboscar, interceptar y patrullar. 
