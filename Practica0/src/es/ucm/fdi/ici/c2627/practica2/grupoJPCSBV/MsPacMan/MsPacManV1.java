@@ -8,6 +8,7 @@ import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.MsPacMan.actions.*;
 import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.MsPacMan.Transitions.*;
 import es.ucm.fdi.ici.fsm.CompoundState;
 import es.ucm.fdi.ici.fsm.FSM;
+import es.ucm.fdi.ici.fsm.FSMObserver;
 import es.ucm.fdi.ici.fsm.SimpleState;
 import es.ucm.fdi.ici.fsm.Transition;
 import es.ucm.fdi.ici.fsm.observers.GraphFSMObserver;
@@ -17,12 +18,25 @@ import pacman.game.Game;
 
 public class MsPacManV1 extends PacmanController {
 
-	// Poner a false al lanzar Comparar (si no, abre 3 ventanas por partida)
-	private static final boolean VER_GRAFOS = true;
+	// true: abre 3 ventanas con los grafos de las FSM. false: no se crea ningún GraphFSMObserver.
+	private static final boolean VER_GRAFOS = false;
 
 	private final FSM fsm; // la de fuera
 	private final FSM estandar; // la de dentro: hay que poder resetearla
 	private final FSM huir;
+
+	private int numCambiosEstado  = 0;
+	private int numCambiosEstandar = 0;
+
+	/** Número total de cambios de estado de la FSM exterior (MsPacMan). */
+	public int getNumCambiosEstado() {
+		return numCambiosEstado;
+	}
+
+	/** Número total de cambios de estado en la sub-FSM estándar (detecta el rebote). */
+	public int getNumCambiosEstandar() {
+		return numCambiosEstandar;
+	}
 
 	/**
 	 * Envuelve una transición para darle otra etiqueta. GraphFSMObserver usa
@@ -66,8 +80,24 @@ public class MsPacManV1 extends PacmanController {
 		Set<String> usadosFuera = new HashSet<>();
 
 		estandar = new FSM("Estandar");
+
+		// Observer para contar cambios en la sub-FSM estándar (detecta el rebote masPildorasSinPoder <-> caminosConPoder)
+		estandar.addObserver(new FSMObserver() {
+			@Override public void fsmAdd(String s, String t, String u) {}
+			@Override public void fsmReady(String s) {}
+			@Override public void fsmReset(String s) {}
+			@Override public void fsmTransition(String s, String t, String u) { numCambiosEstandar++; }
+		});
 		huir = new FSM("Huir");
 		fsm = new FSM("MsPacMan");
+
+		// Observer que cuenta los cambios de estado de la FSM principal
+		fsm.addObserver(new FSMObserver() {
+			@Override public void fsmAdd(String s, String t, String u) {}
+			@Override public void fsmReady(String s) {}
+			@Override public void fsmReset(String s) {}
+			@Override public void fsmTransition(String s, String t, String u) { numCambiosEstado++; }
+		});
 
 		GraphFSMObserver obsEstandar = null, obsHuir = null, obsFuera = null;
 		if (VER_GRAFOS) { // antes de los add(): fsmAdd se notifica al crear la transición

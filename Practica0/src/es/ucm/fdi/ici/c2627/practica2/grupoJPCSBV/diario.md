@@ -62,7 +62,49 @@ Ghosts3: 3716.133333333333 +- 92.50300634884728
 
 Como las puntuaciones son inferiores contra todos los enemigos y las desviaciones son más altas contra todos, sabemos que no hay mejora.
 
+## Reentrega:
+A MsPacManV1 se le ha añadido un observador y dos contadores de cambios de estado: uno para la FSM exterior y otro para la sub-FSM estándar. También se ha creado MsPacManV3. Medimos 300 partidas contra GhostBasico, GhostIntermedio y GhostAvanzado.
 
+### Diferencias entre MsPacManV1 y MsPacManV3
+La única diferencia de comportamiento es la salida del estado "Buscar caminos con PP" dentro de la sub-FSM estándar:
+- MsPacManV1: entra con GrupoCercaTransition(40, 1) (1 o más fantasmas detrás) y sale con GrupoDisueltoTransition(40), que tiene el 2 escrito dentro (sale con menos de 2 detrás).
+- MsPacManV3: entra igual, pero sale con GrupoDisueltoV3Transition(40, 1) (sale con menos de 1 detrás, es decir, con 0). Es una clase interna de MsPacManV3, porque GrupoDisueltoTransition no se puede modificar.
+
+Con exactamente 1 fantasma detrás, en V1 se cumplen a la vez la entrada y la salida, y la FSM podría rebotar entre "Buscar caminos con PP" y "Buscar caminos con más píldoras sin poder" en cada cruce. En V3 se cumple la entrada pero no la salida, así que se queda en "Buscar caminos con PP" hasta que no haya ningún fantasma detrás. Con 0 fantasmas o con 2 o más, V1 y V3 se comportan igual. El resto de estados, transiciones y acciones son idénticos.
+
+### Resultados
+MsPacManV1:
+GhostBasico: 4422.5 +- 86.97856736988045
+Cambios de estado MsPacManV1 (FSM exterior): total=5512  media=18,37
+Cambios de estado MsPacManV1 (sub-FSM estándar): total=1096  media=3,65
+
+GhostIntermedio: 4390.6 +- 99.87285629613861
+Cambios de estado MsPacManV1 (FSM exterior): total=4515  media=15,05
+Cambios de estado MsPacManV1 (sub-FSM estándar): total=726  media=2,42
+
+GhostAvanzado: 2812.0333333333333 +- 50.795440817834326
+Cambios de estado MsPacManV1 (FSM exterior): total=3501  media=11,67
+Cambios de estado MsPacManV1 (sub-FSM estándar): total=291  media=0,97
+
+MsPacManV3:
+GhostBasico: 4462.533333333334 +- 88.75841691785845		Cambio respecto a V1: D=40.03, ET_D=124.27 Diferencia real: D < 2*ET_D No hay cambios notables en la puntuación
+Cambios de estado MsPacManV3 (FSM exterior): total=5271  media=17,57	(V1: 18,37; -4,4%)
+Cambios de estado MsPacManV3 (sub-FSM estándar): total=1002  media=3,34	(V1: 3,65; -8,6%)
+
+GhostIntermedio: 4532.733333333334 +- 107.2681320758811		Cambio respecto a V1: D=142.13, ET_D=146.56 Diferencia real: D < 2*ET_D No hay cambios notables en la puntuación
+Cambios de estado MsPacManV3 (FSM exterior): total=4655  media=15,52	(V1: 15,05; +3,1%)
+Cambios de estado MsPacManV3 (sub-FSM estándar): total=751  media=2,50	(V1: 2,42; +3,4%)
+
+GhostAvanzado: 2834.8 +- 47.6800101381926		Cambio respecto a V1: D=22.77, ET_D=69.67 Diferencia real: D < 2*ET_D No hay cambios notables en la puntuación
+Cambios de estado MsPacManV3 (FSM exterior): total=3602  media=12,01	(V1: 11,67; +2,9%)
+Cambios de estado MsPacManV3 (sub-FSM estándar): total=292  media=0,97	(V1: 0,97; sin cambio)
+
+
+### Conclusiones de la reentrega
+- **Comprobación del rebote:** Contra GhostBasico los cambios de la sub-FSM bajan un 8,6% (de 1096 a 1002) y los de la FSM exterior un 4,4%. Contra GhostIntermedio suben ligeramente (726 a 751) y contra GhostAvanzado quedan igual (291 a 292). No hay un descenso consistente, por lo que no podemos afirmar que V3 elimine un rebote apreciable.
+- **El rebote pesa poco:** la sub-FSM estándar hace entre 0,97 y 3,65 cambios por partida, frente a entre 11,67 y 18,37 de la FSM exterior. Además, esa cifra incluye otras transiciones, como la de no quedar píldoras de poder. Como mucho, el caso de exactamente 1 fantasma detrás provoca pocos rebotes por partida, así que corregirlo no puede cambiar mucho el comportamiento.
+- **Puntuación:** en los tres rivales D < 2*ET_D, así que no hay mejora ni empeoramiento notable. Las diferencias son positivas (+40, +142 y +23), pero están dentro del ruido. La propia V1, medida el sábado y ahora, dio puntuaciones distintas (4463 y 4422 contra GhostBasico; 4305 y 4391 contra GhostIntermedio; 2829 y 2812 contra GhostAvanzado), con diferencias del mismo orden que las de V1 contra V3.
+- **Decisión:** V3 no aporta una mejora medible, aun así, que la salida esté por debajo de la entrada es un buen criterio de diseño (histéresis), porque evita por construcción el rebote cuando entrada y salida coinciden en un mismo valor. Por lo tanto la nueva versión usada sería la V3
 
 
 # Fantasmas:
