@@ -1,24 +1,28 @@
 package es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas.actions;
 
+import java.util.EnumMap;
+
 import es.ucm.fdi.ici.Action;
-import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas.GhostInput;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
 public class PerseguirAction implements Action {
-    private final GHOST ghost;
+	private final GHOST ghost;
+    // 1. Añadir el atributo del mapa
+    private final EnumMap<GHOST, Integer> tiempoPersiguiendo;
 
-    public PerseguirAction(GHOST ghost) {
+    // 2. Modificar el constructor
+    public PerseguirAction(GHOST ghost, EnumMap<GHOST, Integer> tiempoPersiguiendo) {
         this.ghost = ghost;
+        this.tiempoPersiguiendo = tiempoPersiguiendo;
     }
 
     @Override
     public MOVE execute(Game game) {
         // Registra globalmente que este fantasma está persiguiendo (+1 al contador)
-        GhostInput.registrarPersiguiendo(ghost);
-
+    	this.tiempoPersiguiendo.put(ghost, this.tiempoPersiguiendo.getOrDefault(ghost, 0) + 1);
         int yo = game.getGhostCurrentNodeIndex(ghost);
         int pacman = game.getPacmanCurrentNodeIndex();
         MOVE ultimo = game.getGhostLastMoveMade(ghost);
@@ -37,10 +41,13 @@ public class PerseguirAction implements Action {
             // Puntuación base: menor distancia a Ms. Pac-Man -> mayor puntuación
             double puntuacion = -distPacman;
 
-            // Evaluamos la proximidad ÚNICAMENTE respecto a otros fantasmas activos que TAMBIÉN estén persiguiendo
+         // Evaluamos la proximidad ÚNICAMENTE respecto a otros fantasmas activos que TAMBIÉN estén persiguiendo
             for (GHOST otro : GHOST.values()) {
                 if (otro != ghost && game.getGhostLairTime(otro) == 0 && game.getGhostEdibleTime(otro) == 0) {
-                    if (GhostInput.isPersiguiendo(otro)) {
+                    
+                    // CAMBIO AQUÍ: Usamos directamente el mapa 'tiempoPersiguiendo' de esta clase
+                    if (this.tiempoPersiguiendo.getOrDefault(otro, 0) > 0) {
+                        
                         int otroNodo = game.getGhostCurrentNodeIndex(otro);
                         int distOtro = game.getShortestPathDistance(vecino, otroNodo);
 

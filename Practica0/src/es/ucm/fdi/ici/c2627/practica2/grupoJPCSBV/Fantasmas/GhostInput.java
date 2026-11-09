@@ -7,10 +7,8 @@ import java.util.EnumMap;
 
 public class GhostInput extends Input {
 
-    private static final EnumMap<GHOST, Integer> tiempoPersiguiendo = new EnumMap<>(GHOST.class);
-    static {
-        for (GHOST g : GHOST.values()) tiempoPersiguiendo.put(g, 0);
-    }
+    // Se elimina el 'static' e inicialización estática
+    private final EnumMap<GHOST, Integer> tiempoPersiguiendo;
 
     private final GHOST ghost;
     private boolean comido;
@@ -25,8 +23,9 @@ public class GhostInput extends Input {
     private boolean debeDejarDePerseguir;
     private boolean persecucionPermitida;
 
-    public GhostInput(GHOST ghost, Game game) {
-        super(game);         
+    public GhostInput(GHOST ghost, Game game, EnumMap<GHOST, Integer> tiempoPersiguiendo) {
+        super(game);
+		this.tiempoPersiguiendo = tiempoPersiguiendo;         
         this.ghost = ghost;   
         parseInput();         
     }
@@ -104,12 +103,6 @@ public class GhostInput extends Input {
         this.debeDejarDePerseguir = (perseguidoresActivos > 2 && ghost == fantasmaMasVeterano);
         this.persecucionPermitida = (perseguidoresActivos < 2) || (tiempoPersiguiendo.get(ghost) > 0 && !this.debeDejarDePerseguir);
     }
-
-    public static void registrarPersiguiendo(GHOST g) { tiempoPersiguiendo.put(g, tiempoPersiguiendo.get(g) + 1); }
-    public static void registrarNoPersiguiendo(GHOST g) { tiempoPersiguiendo.put(g, 0); }
-    
-    // Método para consultar si un fantasma específico está persiguiendo
-    public static boolean isPersiguiendo(GHOST g) { return tiempoPersiguiendo.get(g) > 0; }
 
     public GHOST getGhost() { return ghost; }
     public boolean isComido() { return comido; }

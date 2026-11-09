@@ -151,6 +151,39 @@ ha habido un problema a la hora de gestionar las clases, ya que se han ido aplic
 ia: sí, para añadir la nueva estrategia a la acción de perseguir, usando este prompt
 integra una estrategia de coordinación espacial obteniendo los movimientos posibles y puntuándolos, haciendo que si el nodo vecino al que lleva un movimiento está a menos de 5 nodos de distancia de otro fantasma persiguiendo, se descarte o se penalice fuertemente
 
+# Reentrega 
+Se han modificado los controladores y los inputs de la V1 y la V0, junto con las diferentes actions y transitions para que no usen los métodos estáticos implementados anteriormente en la clase input para determinar el número de fantasmas persiguiendo a ms pacman, haciendo que cada controlador tenga un mapa propio. Estos han sido los resultados de usar la clase comparar con las nuevas versiones:
+
+300 partidas por versión y rival, semillas 1 a 300, comparando fantasmas.
+
+== puntos: v1 frente a v0 (menos es mejor) ==
+rival                        v0               v1         D   2·ET_D
+Basico                2455 ± 62        2458 ± 64        +3      178  ruido
+Intermedio            2559 ± 98        2461 ± 92       -99      268  ruido
+Avanzado            10120 ± 162       9535 ± 173      -585      474  mejor
+------------------------------------------------------------------------
+MEDIA (3)             5045 ± 66        4818 ± 69      -227      191  mejor
+v1 es mejor contra 1 rivales, peor contra 0 y no se distingue contra 2.
+
+== turnos por vida: v1 frente a v0 (menos es mejor) ==
+rival                        v0               v1         D   2·ET_D
+Basico                 455 ± 43         525 ± 49       +70      132  ruido
+Intermedio            3258 ± 73        3115 ± 79      -144      215  ruido
+Avanzado              2373 ± 76        2309 ± 77       -64      216  ruido
+------------------------------------------------------------------------
+MEDIA (3)             2029 ± 38        1983 ± 40       -46      111  ruido
+v1 es mejor contra 0 rivales, peor contra 0 y no se distingue contra 3.
+
+== fantasmas comidos: v1 frente a v0 (menos es mejor) ==
+rival                        v0               v1         D   2·ET_D
+Basico              2,89 ± 0,10      2,79 ± 0,10     -0,10     0,28  ruido
+Intermedio          1,98 ± 0,14      1,80 ± 0,13     -0,18     0,38  ruido
+Avanzado           14,13 ± 0,22     13,31 ± 0,24     -0,82     0,66  mejor
+------------------------------------------------------------------------
+MEDIA (3)           6,33 ± 0,09      5,97 ± 0,10     -0,37     0,27  mejor
+v1 es mejor contra 1 rivales, peor contra 0 y no se distingue contra 2.
+
+Como se puede observar, aunque por lo general tiene el mismo rendimiento que la v0, la v1 termina siendo ligeramente superior en rendimiento en relación a los puntos que "otorga" y a las veces que son comidos de media, por lo que la elección termina siendo la versión v1
 
 ##Concurso:
 Para el concurso hemos elegido las versiones MsPacManV1 y GhsotFSMController. En los apartados anteriores se explica el por qué debajo de cada versión.

@@ -1,9 +1,9 @@
-package es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas;
+package es.ucm.fdi.ici.c2627.practica3.grupoJPCSBV.Fantasmas;
 
 import java.util.EnumMap;
 import es.ucm.fdi.ici.Action;
-import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas.transitions.*;
-import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas.actions.*;
+import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.actions.*;
+import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.transitions.*;
 import es.ucm.fdi.ici.fsm.CompoundState;
 import es.ucm.fdi.ici.fsm.FSM;
 import es.ucm.fdi.ici.fsm.SimpleState;
@@ -16,22 +16,29 @@ import pacman.game.Game;
 public class GhostFSMControllerV0 extends GhostController {
 
     private final EnumMap<GHOST, FSM> fsms;
+    
+    // 1. NUEVO: Declaramos el mapa como atributo de instancia del controlador
+    private final EnumMap<GHOST, Integer> tiempoPersiguiendo;
 
     public GhostFSMControllerV0() {
         this.fsms = new EnumMap<>(GHOST.class);
+        this.tiempoPersiguiendo = new EnumMap<>(GHOST.class); // Inicializamos el mapa
+        
         for (GHOST ghost : GHOST.values()) {
             this.fsms.put(ghost, buildFSM(ghost));
+            this.tiempoPersiguiendo.put(ghost, 0); // Inicializamos todos los contadores a 0
         }
     }
 
     private FSM buildFSM(GHOST ghost) {
         FSM mainFSM = new FSM(ghost + "_MainFSM");
 
-        Action perseguirAct = new PerseguirAction(ghost);
-        Action huirMsPacmanAct = new HuirMsPacmanAction(ghost);
-        Action huirDispersosAct = new HuirDispersosAction(ghost);
-        Action emboscarAct = new EmboscarAction(ghost); 
-        Action esperarAct = new EsperarSalirAction(ghost);
+        // Instanciación de acciones (incluyendo la versión de persecución coordinada)
+        Action perseguirAct = new PerseguirAction(ghost, tiempoPersiguiendo);
+        Action huirMsPacmanAct = new HuirMsPacmanAction(ghost, tiempoPersiguiendo);
+        Action huirDispersosAct = new HuirDispersosAction(ghost, tiempoPersiguiendo);
+        Action emboscarAct = new EmboscarAction(ghost, tiempoPersiguiendo); 
+        Action esperarAct = new EsperarSalirAction(ghost, tiempoPersiguiendo);
 
         SimpleState perseguirState = new SimpleState("Perseguir", perseguirAct);
         SimpleState esperarState = new SimpleState("Esperar a salir", esperarAct);
@@ -111,7 +118,7 @@ public class GhostFSMControllerV0 extends GhostController {
         mainFSM.add(bloqueInferior, comidoTrans, esperarState);
         mainFSM.add(esperarState, revividoTrans, bloqueSuperior);
 
-        // Manejo de estado comestible (¡Prioridad máxima huir!)
+        // Manejo de estado comestible (prioridad a huir)
         mainFSM.add(bloqueSuperior, comestibleTrans, bloqueInferior);
         mainFSM.add(perseguirState, comestibleTrans, bloqueInferior);
         mainFSM.add(bloqueInferior, noComestibleTrans, bloqueSuperior);
@@ -119,7 +126,6 @@ public class GhostFSMControllerV0 extends GhostController {
         // Transiciones normales entre estrategia superior y persecución
         mainFSM.add(bloqueSuperior, new MasCercaAMsPacmanQueAPPTransition(), perseguirState);
         
-        // El fantasma deja de perseguir si hay demasiados, o si MsPacman se aleja de él
         mainFSM.add(perseguirState, new GenericTransition("Dejar de perseguir (Lógica/Exceso)", 
             in -> ((GhostInput)in).isDebeDejarDePerseguir() || 
                   (!((GhostInput)in).isPersecucionPermitida()) ||
@@ -139,7 +145,7 @@ public class GhostFSMControllerV0 extends GhostController {
     public EnumMap<GHOST, MOVE> getMove(Game game, long timeDue) {
         EnumMap<GHOST, MOVE> moves = new EnumMap<>(GHOST.class);
         for (GHOST ghost : GHOST.values()) {
-            GhostInput input = new GhostInput(ghost, game);
+            GhostInput input = new GhostInput(ghost, game, tiempoPersiguiendo);
             moves.put(ghost, fsms.get(ghost).run(input));
         }
         return moves;

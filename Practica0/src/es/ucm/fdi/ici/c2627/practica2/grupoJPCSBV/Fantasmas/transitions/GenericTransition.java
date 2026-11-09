@@ -1,5 +1,4 @@
 package es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas.transitions;
-
 import es.ucm.fdi.ici.Input;
 import es.ucm.fdi.ici.fsm.Transition;
 import java.util.function.Predicate;

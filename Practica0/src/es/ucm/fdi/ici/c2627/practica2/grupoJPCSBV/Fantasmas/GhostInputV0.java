@@ -1,4 +1,4 @@
-package es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas;
+package es.ucm.fdi.ici.c2627.practica3.grupoYY.ghosts.tmp;
 
 import es.ucm.fdi.ici.Input;
 import pacman.game.Constants.GHOST;
@@ -7,10 +7,8 @@ import java.util.EnumMap;
 
 public class GhostInputV0 extends Input {
 
-    private static final EnumMap<GHOST, Integer> tiempoPersiguiendo = new EnumMap<>(GHOST.class);
-    static {
-        for (GHOST g : GHOST.values()) tiempoPersiguiendo.put(g, 0);
-    }
+    // Se elimina el 'static' e inicialización estática
+    private final EnumMap<GHOST, Integer> tiempoPersiguiendo;
 
     private final GHOST ghost;
     private boolean comido;
@@ -25,8 +23,9 @@ public class GhostInputV0 extends Input {
     private boolean debeDejarDePerseguir;
     private boolean persecucionPermitida;
 
-    public GhostInputV0(GHOST ghost, Game game) {
-        super(game);         
+    public GhostInputV0(GHOST ghost, Game game, EnumMap<GHOST, Integer> tiempoPersiguiendo) {
+        super(game);
+		this.tiempoPersiguiendo = tiempoPersiguiendo;         
         this.ghost = ghost;   
         parseInput();         
     }
@@ -101,18 +100,10 @@ public class GhostInputV0 extends Input {
             }
         }
 
-        // ¿Soy el que lleva más tiempo de los 3?
         this.debeDejarDePerseguir = (perseguidoresActivos > 2 && ghost == fantasmaMasVeterano);
-        
-        // Bloqueo de oscilación: Solo puedo entrar a perseguir si hay hueco libre (< 2 persiguiendo)
-        // o si YO ya estoy persiguiendo legítimamente y no me toca salir.
         this.persecucionPermitida = (perseguidoresActivos < 2) || (tiempoPersiguiendo.get(ghost) > 0 && !this.debeDejarDePerseguir);
     }
 
-    public static void registrarPersiguiendo(GHOST g) { tiempoPersiguiendo.put(g, tiempoPersiguiendo.get(g) + 1); }
-    public static void registrarNoPersiguiendo(GHOST g) { tiempoPersiguiendo.put(g, 0); }
-
-    // Getters...
     public GHOST getGhost() { return ghost; }
     public boolean isComido() { return comido; }
     public int getTiempoComestible() { return tiempoComestible; }

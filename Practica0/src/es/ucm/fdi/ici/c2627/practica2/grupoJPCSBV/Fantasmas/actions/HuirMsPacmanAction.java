@@ -1,23 +1,28 @@
 package es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas.actions;
 
+import java.util.EnumMap;
+
 import es.ucm.fdi.ici.Action;
-import es.ucm.fdi.ici.c2627.practica2.grupoJPCSBV.Fantasmas.GhostInput;
 import pacman.game.Constants.DM;
 import pacman.game.Constants.GHOST;
 import pacman.game.Constants.MOVE;
 import pacman.game.Game;
 
 public class HuirMsPacmanAction implements Action {
+    
     private final GHOST ghost;
+    // 1. Añadir el atributo del mapa
+    private final EnumMap<GHOST, Integer> tiempoPersiguiendo;
 
-    public HuirMsPacmanAction(GHOST ghost) {
+    // 2. Modificar el constructor para recibir el mapa (desde el GhostFSMController)
+    public HuirMsPacmanAction(GHOST ghost, EnumMap<GHOST, Integer> tiempoPersiguiendo) {
         this.ghost = ghost;
+        this.tiempoPersiguiendo = tiempoPersiguiendo;
     }
 
     @Override
     public MOVE execute(Game game) {
-        GhostInput.registrarNoPersiguiendo(ghost);
-
+    	this.tiempoPersiguiendo.put(ghost, 0);
         int yo = game.getGhostCurrentNodeIndex(ghost);
         int pacman = game.getPacmanCurrentNodeIndex();
         MOVE ultimo = game.getGhostLastMoveMade(ghost);
