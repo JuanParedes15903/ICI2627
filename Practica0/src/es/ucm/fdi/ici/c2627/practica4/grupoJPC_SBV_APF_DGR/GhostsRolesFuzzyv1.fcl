@@ -1,18 +1,19 @@
-// Fantasmas · v1 (lógica difusa): prioridades por pesos (WITH), sin huecos de cobertura
-// Una regla gana a otra cuando (activación × peso) es mayor. Pesos = prioridades del sistema de reglas.
+// Fantasmas · v1: coherencia de prioridades y huecos (solo FCL, mismas variables y acciones que v0)
+// Niveles por COG: mucho (~8.2-8.7) > algo (5) > poco (~1.3-2)
+//   mucho = emergencias | algo = cerco | poco = roles
 
 FUNCTION_BLOCK Ghost
 
 VAR_INPUT
-   distPacman : REAL;        // Distancia a Ms. Pac-Man (0 a 300)
-   tiempoComestible : REAL;  // Turnos restantes siendo comestible (0: no lo soy)
-   enCarcel : REAL;          // 0: libre, 1: en la cárcel
-   distPPMsPacman : REAL;    // Distancia de Ms. Pac-Man a su Power Pill más cercana
-   ventajaPP : REAL;         // 1: estoy más cerca de la PP que Ms. Pac-Man, 0: ella está más cerca
-   ranking : REAL;           // Posición de cercanía entre los fantasmas (0: 1º ... 3: 4º)
-   amigosCerca : REAL;       // Otros fantasmas libres y no comestibles
-   numPills : REAL;          // Píldoras normales restantes
-   numPP : REAL;             // Píldoras de poder restantes
+   distPacman : REAL;
+   tiempoComestible : REAL;
+   enCarcel : REAL;
+   distPPMsPacman : REAL;
+   ventajaPP : REAL;
+   ranking : REAL;
+   amigosCerca : REAL;
+   numPills : REAL;
+   numPP : REAL;
 END_VAR
 
 VAR_OUTPUT
@@ -22,22 +23,21 @@ VAR_OUTPUT
    patrullar : REAL;
    cortar_pp : REAL;
    cerco : REAL;
-   salir_carcel : REAL;      // No hay acción registrada en Ghosts.java: el selector la ignora
+   salir_carcel : REAL;
    huir : REAL;
    huir_disperso : REAL;
 END_VAR
 
-// ================= FUZZIFICACIÓN DE ENTRADAS =================
-
 FUZZIFY distPacman
-   TERM panico  := (0, 1) (35, 1) (45, 0);       // Umbral ~40 (G2a / G2b)
-   TERM alejado := (40, 0) (55, 1) (300, 1);     // Seguro (G2c)
-   TERM cerca   := (0, 1) (70, 1) (130, 0);      // Radio de cerco (R6)
+   TERM panico := (0, 1) (35, 1) (45, 0);
+   TERM media := trian 30 100 200;
+   TERM lejos := (150, 0) (220, 1) (300, 1);
 END_FUZZIFY
 
 FUZZIFY tiempoComestible
-   TERM no   := (0, 1) (1, 0);
-   TERM poco := (0, 0) (1, 1) (12, 1) (25, 0);   // Efecto a punto de acabar
+   TERM no := (0, 1) (1, 0);
+   TERM poco := trian 1 10 20;
+   TERM mucho := (15, 0) (30, 1) (200, 1);
 END_FUZZIFY
 
 FUZZIFY enCarcel
@@ -46,8 +46,9 @@ FUZZIFY enCarcel
 END_FUZZIFY
 
 FUZZIFY distPPMsPacman
-   TERM peligro     := (0, 1) (14, 1) (20, 0);          // G3: ~15 nodos
-   TERM aproximando := (10, 0) (20, 1) (60, 1) (90, 0); // R5: ventana en la que aún se puede cortar
+   TERM peligro := (0, 1) (12, 1) (18, 0);
+   TERM cercana := (0, 1) (60, 1) (100, 0);     // NUEVO: la PP es objetivo inmediato de Ms. Pac-Man
+   TERM segura := (15, 0) (30, 1) (300, 1);
 END_FUZZIFY
 
 FUZZIFY ventajaPP
@@ -56,115 +57,92 @@ FUZZIFY ventajaPP
 END_FUZZIFY
 
 FUZZIFY ranking
-   TERM primero := (0, 1) (0.5, 0);              // Acosador
-   TERM segundo := trian 0.5 1 1.5;              // Bloqueador
-   TERM tercero := trian 1.5 2 2.5;              // Emboscador
-   TERM cuarto  := (2.5, 0) (3, 1);              // Dispersor
+   TERM primero := (0, 1) (0.5, 0);
+   TERM segundo := trian 0.5 1 1.5;
+   TERM tercero := trian 1.5 2 2.5;
+   TERM cuarto := (2.5, 0) (3, 1);
 END_FUZZIFY
 
 FUZZIFY amigosCerca
-   TERM pocos  := (0, 1) (1, 0);
+   TERM pocos := (0, 1) (1, 0);
    TERM varios := (0.5, 0) (1, 1) (4, 1);
 END_FUZZIFY
 
 FUZZIFY numPills
-   TERM pocas := (0, 1) (20, 1) (30, 0);         // Fase final (~20)
+   TERM pocas := (0, 1) (15, 1) (25, 0);
+   TERM muchas := (20, 0) (40, 1) (300, 1);
 END_FUZZIFY
 
 FUZZIFY numPP
-   TERM cero   := (0, 1) (1, 0);
+   TERM cero := (0, 1) (1, 0);
    TERM quedan := (0, 0) (1, 1) (4, 1);
 END_FUZZIFY
 
-// ================= DEFUZZIFICACIÓN DE SALIDAS =================
-// Solo se usa "mucho": la prioridad la fijan los pesos WITH de cada regla.
-
 DEFUZZIFY perseguir
-   TERM mucho := (6, 0) (10, 1);
-   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
 END_DEFUZZIFY
-
 DEFUZZIFY interceptar
-   TERM mucho := (6, 0) (10, 1);
-   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
 END_DEFUZZIFY
-
 DEFUZZIFY emboscar
-   TERM mucho := (6, 0) (10, 1);
-   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
 END_DEFUZZIFY
-
 DEFUZZIFY patrullar
-   TERM mucho := (6, 0) (10, 1);
-   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
 END_DEFUZZIFY
-
 DEFUZZIFY cortar_pp
-   TERM mucho := (6, 0) (10, 1);
-   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
 END_DEFUZZIFY
-
 DEFUZZIFY cerco
-   TERM mucho := (6, 0) (10, 1);
-   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
 END_DEFUZZIFY
-
 DEFUZZIFY salir_carcel
-   TERM mucho := (6, 0) (10, 1);
-   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
 END_DEFUZZIFY
-
 DEFUZZIFY huir
-   TERM mucho := (6, 0) (10, 1);
-   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
 END_DEFUZZIFY
-
 DEFUZZIFY huir_disperso
-   TERM mucho := (6, 0) (10, 1);
-   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
 END_DEFUZZIFY
-
-// ================= BASE DE REGLAS =================
 
 RULEBLOCK reglas
    AND : MIN;
    ACT : MIN;
    ACCU : MAX;
 
-   // ---- G4: cárcel ----
-   RULE 1 : IF enCarcel IS si THEN salir_carcel IS mucho WITH 1.0;
+   // ---- Nivel MUCHO: emergencias ----
+   RULE 1 : IF enCarcel IS si THEN salir_carcel IS mucho;
+   RULE 2 : IF tiempoComestible IS NOT no AND distPacman IS panico THEN huir IS mucho;
+   RULE 3 : IF tiempoComestible IS NOT no AND distPacman IS media THEN huir_disperso IS mucho;
+   RULE 4 : IF tiempoComestible IS poco AND distPacman IS lejos THEN perseguir IS mucho;
+   // NUEVA: hueco de v0 (comestible, mucho tiempo, lejos)
+   RULE 5 : IF tiempoComestible IS mucho AND distPacman IS lejos THEN huir_disperso IS mucho;
+   // CAMBIO: solo huye si ella llega antes a la PP (si llego yo antes, corto)
+   RULE 6 : IF enCarcel IS no AND tiempoComestible IS no AND distPPMsPacman IS peligro AND ventajaPP IS no THEN huir IS mucho;
+   // CAMBIO: solo corto si ella esta cerca de la PP
+   RULE 7 : IF enCarcel IS no AND tiempoComestible IS no AND ventajaPP IS si AND distPPMsPacman IS cercana THEN cortar_pp IS mucho;
+   RULE 8 : IF enCarcel IS no AND tiempoComestible IS no AND numPills IS pocas AND numPP IS cero THEN perseguir IS mucho;
 
-   // ---- G2: supervivencia del comestible (cubre TODAS las distancias) ----
-   // G2c: me queda poco efecto y Ms. Pac-Man está lejos: me reincorporo
-   RULE 2 : IF tiempoComestible IS poco AND distPacman IS alejado THEN perseguir IS mucho WITH 1.0;
-   // G2a: peligro inminente
-   RULE 3 : IF tiempoComestible IS NOT no AND distPacman IS panico THEN huir IS mucho WITH 0.95;
-   // G2b: fuera de peligro inmediato, huyo separándome del grupo (sin límite superior de distancia)
-   RULE 4 : IF tiempoComestible IS NOT no AND distPacman IS NOT panico THEN huir_disperso IS mucho WITH 0.95;
+   // ---- Nivel ALGO: coordinacion de equipo ----
+   RULE 9 : IF enCarcel IS no AND tiempoComestible IS no AND distPacman IS media AND amigosCerca IS varios THEN cerco IS algo;
 
-   // ---- G3: Ms. Pac-Man junto a una PPill ----
-   RULE 5 : IF enCarcel IS no AND tiempoComestible IS no AND distPPMsPacman IS peligro THEN huir IS mucho WITH 0.90;
-
-   // ---- R5: cortar el camino a la PP (solo bloqueador y emboscador, para no converger todos) ----
-   RULE 6 : IF enCarcel IS no AND tiempoComestible IS no AND ventajaPP IS si AND distPPMsPacman IS aproximando AND ranking IS segundo THEN cortar_pp IS mucho WITH 0.85;
-   RULE 7 : IF enCarcel IS no AND tiempoComestible IS no AND ventajaPP IS si AND distPPMsPacman IS aproximando AND ranking IS tercero THEN cortar_pp IS mucho WITH 0.85;
-
-   // ---- Fase final sin PP: con compañeros, cerco; solo, perseguir ----
-   RULE 8 : IF enCarcel IS no AND tiempoComestible IS no AND numPills IS pocas AND numPP IS cero AND amigosCerca IS varios THEN cerco IS mucho WITH 0.80;
-   RULE 9 : IF enCarcel IS no AND tiempoComestible IS no AND numPills IS pocas AND numPP IS cero AND amigosCerca IS pocos THEN perseguir IS mucho WITH 0.80;
-
-   // ---- R1: acosador ----
-   RULE 10 : IF enCarcel IS no AND tiempoComestible IS no AND ranking IS primero THEN perseguir IS mucho WITH 0.75;
-
-   // ---- R6: cerco (cualquier fantasma cerca y con compañeros) ----
-   RULE 11 : IF enCarcel IS no AND tiempoComestible IS no AND distPacman IS cerca AND amigosCerca IS varios THEN cerco IS mucho WITH 0.70;
-
-   // ---- R2 a R4: roles por ranking ----
-   RULE 12 : IF enCarcel IS no AND tiempoComestible IS no AND ranking IS segundo THEN interceptar IS mucho WITH 0.60;
-   RULE 13 : IF enCarcel IS no AND tiempoComestible IS no AND ranking IS tercero THEN emboscar IS mucho WITH 0.50;
-   // Dispersor: patrulla las PP si quedan; si no quedan, patrullar es aleatorio, así que emboscar
-   RULE 14 : IF enCarcel IS no AND tiempoComestible IS no AND ranking IS cuarto AND numPP IS quedan THEN patrullar IS mucho WITH 0.40;
-   RULE 15 : IF enCarcel IS no AND tiempoComestible IS no AND ranking IS cuarto AND numPP IS cero THEN emboscar IS mucho WITH 0.45;
+   // ---- Nivel POCO: roles por defecto ----
+   RULE 10: IF enCarcel IS no AND tiempoComestible IS no AND ranking IS primero THEN perseguir IS poco;
+   RULE 11: IF enCarcel IS no AND tiempoComestible IS no AND ranking IS segundo THEN interceptar IS poco;
+   RULE 12: IF enCarcel IS no AND tiempoComestible IS no AND ranking IS tercero THEN emboscar IS poco;
+   RULE 13: IF enCarcel IS no AND tiempoComestible IS no AND ranking IS cuarto AND numPP IS quedan THEN patrullar IS poco;
+   // NUEVA: sin PPs, patrullar es aleatorio; el cuarto ayuda a cerrar el cerco
+   RULE 14: IF enCarcel IS no AND tiempoComestible IS no AND ranking IS cuarto AND numPP IS cero THEN cerco IS poco;
 
 END_RULEBLOCK
 
