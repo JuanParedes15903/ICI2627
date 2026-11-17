@@ -1,0 +1,171 @@
+// Fantasmas · v1 (lógica difusa): prioridades por pesos (WITH), sin huecos de cobertura
+// Una regla gana a otra cuando (activación × peso) es mayor. Pesos = prioridades del sistema de reglas.
+
+FUNCTION_BLOCK Ghost
+
+VAR_INPUT
+   distPacman : REAL;        // Distancia a Ms. Pac-Man (0 a 300)
+   tiempoComestible : REAL;  // Turnos restantes siendo comestible (0: no lo soy)
+   enCarcel : REAL;          // 0: libre, 1: en la cárcel
+   distPPMsPacman : REAL;    // Distancia de Ms. Pac-Man a su Power Pill más cercana
+   ventajaPP : REAL;         // 1: estoy más cerca de la PP que Ms. Pac-Man, 0: ella está más cerca
+   ranking : REAL;           // Posición de cercanía entre los fantasmas (0: 1º ... 3: 4º)
+   amigosCerca : REAL;       // Otros fantasmas libres y no comestibles
+   numPills : REAL;          // Píldoras normales restantes
+   numPP : REAL;             // Píldoras de poder restantes
+END_VAR
+
+VAR_OUTPUT
+   perseguir : REAL;
+   interceptar : REAL;
+   emboscar : REAL;
+   patrullar : REAL;
+   cortar_pp : REAL;
+   cerco : REAL;
+   salir_carcel : REAL;      // No hay acción registrada en Ghosts.java: el selector la ignora
+   huir : REAL;
+   huir_disperso : REAL;
+END_VAR
+
+// ================= FUZZIFICACIÓN DE ENTRADAS =================
+
+FUZZIFY distPacman
+   TERM panico  := (0, 1) (35, 1) (45, 0);       // Umbral ~40 (G2a / G2b)
+   TERM alejado := (40, 0) (55, 1) (300, 1);     // Seguro (G2c)
+   TERM cerca   := (0, 1) (70, 1) (130, 0);      // Radio de cerco (R6)
+END_FUZZIFY
+
+FUZZIFY tiempoComestible
+   TERM no   := (0, 1) (1, 0);
+   TERM poco := (0, 0) (1, 1) (12, 1) (25, 0);   // Efecto a punto de acabar
+END_FUZZIFY
+
+FUZZIFY enCarcel
+   TERM no := (0, 1) (0.5, 0);
+   TERM si := (0.5, 0) (1, 1);
+END_FUZZIFY
+
+FUZZIFY distPPMsPacman
+   TERM peligro     := (0, 1) (14, 1) (20, 0);          // G3: ~15 nodos
+   TERM aproximando := (10, 0) (20, 1) (60, 1) (90, 0); // R5: ventana en la que aún se puede cortar
+END_FUZZIFY
+
+FUZZIFY ventajaPP
+   TERM no := (0, 1) (0.5, 0);
+   TERM si := (0.5, 0) (1, 1);
+END_FUZZIFY
+
+FUZZIFY ranking
+   TERM primero := (0, 1) (0.5, 0);              // Acosador
+   TERM segundo := trian 0.5 1 1.5;              // Bloqueador
+   TERM tercero := trian 1.5 2 2.5;              // Emboscador
+   TERM cuarto  := (2.5, 0) (3, 1);              // Dispersor
+END_FUZZIFY
+
+FUZZIFY amigosCerca
+   TERM pocos  := (0, 1) (1, 0);
+   TERM varios := (0.5, 0) (1, 1) (4, 1);
+END_FUZZIFY
+
+FUZZIFY numPills
+   TERM pocas := (0, 1) (20, 1) (30, 0);         // Fase final (~20)
+END_FUZZIFY
+
+FUZZIFY numPP
+   TERM cero   := (0, 1) (1, 0);
+   TERM quedan := (0, 0) (1, 1) (4, 1);
+END_FUZZIFY
+
+// ================= DEFUZZIFICACIÓN DE SALIDAS =================
+// Solo se usa "mucho": la prioridad la fijan los pesos WITH de cada regla.
+
+DEFUZZIFY perseguir
+   TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+END_DEFUZZIFY
+
+DEFUZZIFY interceptar
+   TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+END_DEFUZZIFY
+
+DEFUZZIFY emboscar
+   TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+END_DEFUZZIFY
+
+DEFUZZIFY patrullar
+   TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+END_DEFUZZIFY
+
+DEFUZZIFY cortar_pp
+   TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+END_DEFUZZIFY
+
+DEFUZZIFY cerco
+   TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+END_DEFUZZIFY
+
+DEFUZZIFY salir_carcel
+   TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+END_DEFUZZIFY
+
+DEFUZZIFY huir
+   TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+END_DEFUZZIFY
+
+DEFUZZIFY huir_disperso
+   TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0; RANGE := (0 .. 10);
+END_DEFUZZIFY
+
+// ================= BASE DE REGLAS =================
+
+RULEBLOCK reglas
+   AND : MIN;
+   ACT : MIN;
+   ACCU : MAX;
+
+   // ---- G4: cárcel ----
+   RULE 1 : IF enCarcel IS si THEN salir_carcel IS mucho WITH 1.0;
+
+   // ---- G2: supervivencia del comestible (cubre TODAS las distancias) ----
+   // G2c: me queda poco efecto y Ms. Pac-Man está lejos: me reincorporo
+   RULE 2 : IF tiempoComestible IS poco AND distPacman IS alejado THEN perseguir IS mucho WITH 1.0;
+   // G2a: peligro inminente
+   RULE 3 : IF tiempoComestible IS NOT no AND distPacman IS panico THEN huir IS mucho WITH 0.95;
+   // G2b: fuera de peligro inmediato, huyo separándome del grupo (sin límite superior de distancia)
+   RULE 4 : IF tiempoComestible IS NOT no AND distPacman IS NOT panico THEN huir_disperso IS mucho WITH 0.95;
+
+   // ---- G3: Ms. Pac-Man junto a una PPill ----
+   RULE 5 : IF enCarcel IS no AND tiempoComestible IS no AND distPPMsPacman IS peligro THEN huir IS mucho WITH 0.90;
+
+   // ---- R5: cortar el camino a la PP (solo bloqueador y emboscador, para no converger todos) ----
+   RULE 6 : IF enCarcel IS no AND tiempoComestible IS no AND ventajaPP IS si AND distPPMsPacman IS aproximando AND ranking IS segundo THEN cortar_pp IS mucho WITH 0.85;
+   RULE 7 : IF enCarcel IS no AND tiempoComestible IS no AND ventajaPP IS si AND distPPMsPacman IS aproximando AND ranking IS tercero THEN cortar_pp IS mucho WITH 0.85;
+
+   // ---- Fase final sin PP: con compañeros, cerco; solo, perseguir ----
+   RULE 8 : IF enCarcel IS no AND tiempoComestible IS no AND numPills IS pocas AND numPP IS cero AND amigosCerca IS varios THEN cerco IS mucho WITH 0.80;
+   RULE 9 : IF enCarcel IS no AND tiempoComestible IS no AND numPills IS pocas AND numPP IS cero AND amigosCerca IS pocos THEN perseguir IS mucho WITH 0.80;
+
+   // ---- R1: acosador ----
+   RULE 10 : IF enCarcel IS no AND tiempoComestible IS no AND ranking IS primero THEN perseguir IS mucho WITH 0.75;
+
+   // ---- R6: cerco (cualquier fantasma cerca y con compañeros) ----
+   RULE 11 : IF enCarcel IS no AND tiempoComestible IS no AND distPacman IS cerca AND amigosCerca IS varios THEN cerco IS mucho WITH 0.70;
+
+   // ---- R2 a R4: roles por ranking ----
+   RULE 12 : IF enCarcel IS no AND tiempoComestible IS no AND ranking IS segundo THEN interceptar IS mucho WITH 0.60;
+   RULE 13 : IF enCarcel IS no AND tiempoComestible IS no AND ranking IS tercero THEN emboscar IS mucho WITH 0.50;
+   // Dispersor: patrulla las PP si quedan; si no quedan, patrullar es aleatorio, así que emboscar
+   RULE 14 : IF enCarcel IS no AND tiempoComestible IS no AND ranking IS cuarto AND numPP IS quedan THEN patrullar IS mucho WITH 0.40;
+   RULE 15 : IF enCarcel IS no AND tiempoComestible IS no AND ranking IS cuarto AND numPP IS cero THEN emboscar IS mucho WITH 0.45;
+
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
