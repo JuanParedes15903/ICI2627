@@ -6,7 +6,7 @@ import pacman.controllers.GhostController;
 import pacman.controllers.PacmanController;
 
 /**
- * Los rivales de referencia de la Práctica 3: cinco fantasmas y tres Ms. Pac-Man.
+ * Los rivales de referencia de la Práctica 4: cinco fantasmas y tres Ms. Pac-Man.
  * Son los mismos para todos los grupos y para las cifras de la wiki, así que no
  * los quitéis ni los cambiéis: si queréis más rivales, añadidlos en Comparar.
  */

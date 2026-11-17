@@ -11,8 +11,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.Ghosts;
-import es.ucm.fdi.ici.c2627.practica3.grupo_JPC_SBV_APF_DGR.MsPacMan;
+import es.ucm.fdi.ici.c2627.practica4.grupoJPC_SBV_APF_DGR.Ghosts;
+import es.ucm.fdi.ici.c2627.practica4.grupoJPC_SBV_APF_DGR.MsPacMan;
 import pacman.controllers.GhostController;
 import pacman.controllers.PacmanController;
 import pacman.game.Game;
@@ -27,7 +27,8 @@ import pacman.game.util.Stats;
  */
 public class Comparar {
 
-    static final boolean COMPARO_FANTASMAS = true;// true:  vuestros fantasmas contra RIVALES_PACMANS
+    static final boolean COMPARO_FANTASMAS = false;  // false: vuestras Ms. Pac-Man contra RIVALES_FANTASMAS
+                                                     // true:  vuestros fantasmas contra RIVALES_PACMANS
 
     // ---- 1. Vuestras versiones, en orden: cada una contra la anterior -------
     static final Map<String, Supplier<PacmanController>> MIS_PACMANS = new LinkedHashMap<>();
@@ -38,17 +39,15 @@ public class Comparar {
     static final Map<String, Supplier<PacmanController>> RIVALES_PACMANS = Rivales.pacmans();
 
     static {
-        MIS_PACMANS.put("v1", () -> new MsPacMan("mspacman-v1.clp"));
-        MIS_PACMANS.put("v3", () -> new MsPacMan("mspacman-v3.clp"));
-        MIS_PACMANS.put("v4", () -> new MsPacMan("mspacman-v4.clp"));
+        MIS_PACMANS.put("v0", () -> new MsPacMan("mspacman-v0.fcl"));     // huir, comer y perseguir
+        MIS_PACMANS.put("v1", () -> new MsPacMan("mspacman-v1.fcl"));     // con la píldora de poder
 
-        MIS_FANTASMAS.put("v1", () -> new Ghosts("ghostsRolesv1.clp"));       // G1 y G2
-        MIS_FANTASMAS.put("v2", () -> new Ghosts("ghostsRolesv2.clp"));       // con G3
-        MIS_FANTASMAS.put("v3", () -> new Ghosts("ghostsRolesv3.clp"));
-        
+        MIS_FANTASMAS.put("v0", () -> new Ghosts("ghosts-v0.fcl"));       // perseguir o huir
+        MIS_FANTASMAS.put("v1", () -> new Ghosts("ghosts-v1.fcl"));       // con la píldora de poder
+
         // Si queréis más rivales, aquí, y desde el principio: los mismos para todas las versiones.
-        // RIVALES_FANTASMAS.put("P2 nuestros", es.ucm.fdi.ici.c2627.practica2.grupoYY.Ghosts::new);
-        // RIVALES_PACMANS.put("P2 nuestra", es.ucm.fdi.ici.c2627.practica2.grupoYY.MsPacMan::new);
+        // RIVALES_FANTASMAS.put("P3 nuestros", es.ucm.fdi.ici.c2627.practica3.grupoYY.Ghosts::new);
+        // RIVALES_PACMANS.put("P3 nuestra", es.ucm.fdi.ici.c2627.practica3.grupoYY.MsPacMan::new);
     }
 
     // ---- 3. Cómo se mide ----------------------------------------------------
@@ -120,7 +119,7 @@ public class Comparar {
     static double[][] jugarBloque(String version, String rival, int desde, int hasta) {
         PacmanController pacman;
         GhostController fantasmas;
-        synchronized (Comparar.class) {    // Jess no sabe leer dos .clp a la vez: de uno en uno
+        synchronized (Comparar.class) {    // los controladores se crean de uno en uno
             pacman = COMPARO_FANTASMAS ? RIVALES_PACMANS.get(rival).get() : MIS_PACMANS.get(version).get();
             fantasmas = COMPARO_FANTASMAS ? MIS_FANTASMAS.get(version).get() : RIVALES_FANTASMAS.get(rival).get();
         }
