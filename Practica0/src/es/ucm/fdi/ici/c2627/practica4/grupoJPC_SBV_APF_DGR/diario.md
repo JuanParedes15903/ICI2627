@@ -88,7 +88,92 @@ v1 es mejor contra 0 rivales, peor contra 0 y no se distingue contra 3.
 Conclusión: la v1 mantiene los puntos y los fantasmas comidos (ruido en los tres rivales) y acaba con Ms. Pac-Man antes: −284 turnos por vida de media, con mejora clara contra Basico e Intermedio. Los puntos no mejoran, pero la jerarquía de prioridades hace el comportamiento predecible y medible.
 
 Trazas v1:
-
+[BLINKY] 50 turnos. Turnos en que se activa cada regla:
+        0  RULE 1   <-- NUNCA
+        1  RULE 2
+        3  RULE 3
+        0  RULE 4   <-- NUNCA
+        0  RULE 5   <-- NUNCA
+        2  RULE 6
+        5  RULE 7
+        0  RULE 8   <-- NUNCA
+       33  RULE 9
+       27  RULE 10
+        8  RULE 11
+        2  RULE 12
+        9  RULE 13
+        0  RULE 14   <-- NUNCA
+[BLINKY] Veces que gana cada acción:
+       28  BLINKY cerco
+        5  BLINKY cortar_pp
+        3  BLINKY huir
+        3  BLINKY huir_disperso
+       11  BLINKY perseguir
+[PINKY] 40 turnos. Turnos en que se activa cada regla:
+        0  RULE 1   <-- NUNCA
+        1  RULE 2
+        7  RULE 3
+        0  RULE 4   <-- NUNCA
+        0  RULE 5   <-- NUNCA
+        1  RULE 6
+        6  RULE 7
+        0  RULE 8   <-- NUNCA
+       31  RULE 9
+        3  RULE 10
+       10  RULE 11
+       14  RULE 12
+        5  RULE 13
+        0  RULE 14   <-- NUNCA
+[PINKY] Veces que gana cada acción:
+       24  PINKY cerco
+        6  PINKY cortar_pp
+        2  PINKY huir
+        7  PINKY huir_disperso
+        1  PINKY perseguir
+[INKY] 40 turnos. Turnos en que se activa cada regla:
+        0  RULE 1   <-- NUNCA
+        0  RULE 2   <-- NUNCA
+        1  RULE 3
+        0  RULE 4   <-- NUNCA
+        0  RULE 5   <-- NUNCA
+        2  RULE 6
+        5  RULE 7
+        0  RULE 8   <-- NUNCA
+       26  RULE 9
+       13  RULE 10
+       17  RULE 11
+        6  RULE 12
+        3  RULE 13
+        0  RULE 14   <-- NUNCA
+[INKY] Veces que gana cada acción:
+       22  INKY cerco
+        5  INKY cortar_pp
+        2  INKY huir
+        1  INKY huir_disperso
+        1  INKY interceptar
+        9  INKY perseguir
+[SUE] 31 turnos. Turnos en que se activa cada regla:
+        0  RULE 1   <-- NUNCA
+        0  RULE 2   <-- NUNCA
+        7  RULE 3
+        0  RULE 4   <-- NUNCA
+        4  RULE 5
+        2  RULE 6
+        5  RULE 7
+        0  RULE 8   <-- NUNCA
+       14  RULE 9
+       10  RULE 10
+        5  RULE 11
+        5  RULE 12
+        4  RULE 13
+        0  RULE 14   <-- NUNCA
+[SUE] Veces que gana cada acción:
+       11  SUE cerco
+        5  SUE cortar_pp
+        2  SUE huir
+        7  SUE huir_disperso
+        4  SUE interceptar
+        2  SUE perseguir
 
 # **Versión V2**
 Mismas entradas, términos y niveles que la v1, mismo Input (GhostsInput). Cambia qué acción ejecutan 4 reglas. La v2 tiene 12 salidas y las 3 nuevas se registran en GhostsExt, que es como Ghosts con las acciones añadidas. Las acciones antiguas siguen declaradas y registradas para poder comparar.
@@ -145,3 +230,92 @@ Fantasmas comidos: no hay diferencia en la media. Solo mejora contra Intermedio 
 La v1 no se distingue de la v0 en puntos, pero la v2 acumula una mejora pequeña sobre la v1 en puntos y turnos. Nos quedamos con la v2.
 
 Trazas v2:
+[BLINKY] 76 turnos. Turnos en que se activa cada regla:
+        0  RULE 1   <-- NUNCA
+        0  RULE 2   <-- NUNCA
+        5  RULE 3
+        0  RULE 4   <-- NUNCA
+        0  RULE 5   <-- NUNCA
+        1  RULE 6
+        9  RULE 7
+        0  RULE 8   <-- NUNCA
+       58  RULE 9
+       18  RULE 10
+       19  RULE 11
+       12  RULE 12
+       22  RULE 13
+        0  RULE 14   <-- NUNCA
+[BLINKY] Veces que gana cada acción:
+       51  BLINKY cerco
+        9  BLINKY cortar_pp
+        1  BLINKY huir
+        5  BLINKY huir_disperso
+        2  BLINKY interceptar
+        1  BLINKY patrullar
+        7  BLINKY perseguir
+[PINKY] 62 turnos. Turnos en que se activa cada regla:
+        0  RULE 1   <-- NUNCA
+        0  RULE 2   <-- NUNCA
+        4  RULE 3
+        0  RULE 4   <-- NUNCA
+        1  RULE 5
+        0  RULE 6   <-- NUNCA
+        4  RULE 7
+        0  RULE 8   <-- NUNCA
+       34  RULE 9
+       22  RULE 10
+       14  RULE 11
+       13  RULE 12
+        9  RULE 13
+        0  RULE 14   <-- NUNCA
+[PINKY] Veces que gana cada acción:
+       30  PINKY cerco
+        4  PINKY cortar_pp
+        4  PINKY huir_disperso
+        3  PINKY interceptar
+       21  PINKY perseguir
+[INKY] 70 turnos. Turnos en que se activa cada regla:
+        0  RULE 1   <-- NUNCA
+        0  RULE 2   <-- NUNCA
+        0  RULE 3   <-- NUNCA
+        0  RULE 4   <-- NUNCA
+        0  RULE 5   <-- NUNCA
+        0  RULE 6   <-- NUNCA
+        1  RULE 7
+        0  RULE 8   <-- NUNCA
+       43  RULE 9
+       26  RULE 10
+       19  RULE 11
+       18  RULE 12
+        7  RULE 13
+        0  RULE 14   <-- NUNCA
+[INKY] Veces que gana cada acción:
+       43  INKY cerco
+        1  INKY cortar_pp
+        2  INKY emboscar
+        4  INKY interceptar
+        1  INKY patrullar
+       19  INKY perseguir
+[SUE] 69 turnos. Turnos en que se activa cada regla:
+        0  RULE 1   <-- NUNCA
+        0  RULE 2   <-- NUNCA
+        5  RULE 3
+        0  RULE 4   <-- NUNCA
+        0  RULE 5   <-- NUNCA
+        1  RULE 6
+        2  RULE 7
+        0  RULE 8   <-- NUNCA
+       51  RULE 9
+        2  RULE 10
+       39  RULE 11
+       18  RULE 12
+        5  RULE 13
+        0  RULE 14   <-- NUNCA
+[SUE] Veces que gana cada acción:
+       48  SUE cerco
+        2  SUE cortar_pp
+        2  SUE emboscar
+        1  SUE huir
+        5  SUE huir_disperso
+       10  SUE interceptar
+        1  SUE perseguir
