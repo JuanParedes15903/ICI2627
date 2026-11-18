@@ -12,7 +12,7 @@ import net.sourceforge.jFuzzyLogic.rule.Variable;
  */
 public class ProbarBorroso {
 
-    static final String FCL = "bin/es/ucm/fdi/ici/c2627/practica4/grupoYY/mspacman-v1.fcl";
+    static final String FCL = "src/es/ucm/fdi/ici/c2627/practica4/grupoJPC_SBV_APF_DGR/mspacman-v1.fcl";
     static final String BLOQUE = "MsPacMan";
     static int fallos = 0;
 
