@@ -1,0 +1,165 @@
+// Fantasmas · v2: v1 + acciones nuevas (huir_seguro, interceptar_cruce, guardia_pp)
+// Mismas variables de entrada que v1 (las de GhostsInput). Solo cambian 4 consecuentes.
+// Las salidas antiguas se conservan declaradas para que el selector las encuentre.
+// Niveles por COG: mucho (~8.2-8.7) > algo (5) > poco (~1.3-2)
+
+FUNCTION_BLOCK Ghost
+
+VAR_INPUT
+   distPacman : REAL;
+   tiempoComestible : REAL;
+   enCarcel : REAL;
+   distPPMsPacman : REAL;
+   ventajaPP : REAL;
+   ranking : REAL;
+   amigosCerca : REAL;
+   numPills : REAL;
+   numPP : REAL;
+END_VAR
+
+VAR_OUTPUT
+   perseguir : REAL;
+   interceptar : REAL;
+   emboscar : REAL;
+   patrullar : REAL;
+   cortar_pp : REAL;
+   cerco : REAL;
+   salir_carcel : REAL;
+   huir : REAL;
+   huir_disperso : REAL;
+   huir_seguro : REAL;
+   interceptar_cruce : REAL;
+   guardia_pp : REAL;
+END_VAR
+
+FUZZIFY distPacman
+   TERM panico := (0, 1) (35, 1) (45, 0);
+   TERM media := trian 30 100 200;
+   TERM lejos := (150, 0) (220, 1) (300, 1);
+END_FUZZIFY
+
+FUZZIFY tiempoComestible
+   TERM no := (0, 1) (1, 0);
+   TERM poco := trian 1 10 20;
+   TERM mucho := (15, 0) (30, 1) (200, 1);
+END_FUZZIFY
+
+FUZZIFY enCarcel
+   TERM no := (0, 1) (0.5, 0);
+   TERM si := (0.5, 0) (1, 1);
+END_FUZZIFY
+
+FUZZIFY distPPMsPacman
+   TERM peligro := (0, 1) (12, 1) (18, 0);
+   TERM cercana := (0, 1) (60, 1) (100, 0);
+   TERM segura := (15, 0) (30, 1) (300, 1);
+END_FUZZIFY
+
+FUZZIFY ventajaPP
+   TERM no := (0, 1) (0.5, 0);
+   TERM si := (0.5, 0) (1, 1);
+END_FUZZIFY
+
+FUZZIFY ranking
+   TERM primero := (0, 1) (0.5, 0);
+   TERM segundo := trian 0.5 1 1.5;
+   TERM tercero := trian 1.5 2 2.5;
+   TERM cuarto := (2.5, 0) (3, 1);
+END_FUZZIFY
+
+FUZZIFY amigosCerca
+   TERM pocos := (0, 1) (1, 0);
+   TERM varios := (0.5, 0) (1, 1) (4, 1);
+END_FUZZIFY
+
+FUZZIFY numPills
+   TERM pocas := (0, 1) (15, 1) (25, 0);
+   TERM muchas := (20, 0) (40, 1) (300, 1);
+END_FUZZIFY
+
+FUZZIFY numPP
+   TERM cero := (0, 1) (1, 0);
+   TERM quedan := (0, 0) (1, 1) (4, 1);
+END_FUZZIFY
+
+DEFUZZIFY perseguir
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
+END_DEFUZZIFY
+DEFUZZIFY interceptar
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
+END_DEFUZZIFY
+DEFUZZIFY emboscar
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
+END_DEFUZZIFY
+DEFUZZIFY patrullar
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
+END_DEFUZZIFY
+DEFUZZIFY cortar_pp
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
+END_DEFUZZIFY
+DEFUZZIFY cerco
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
+END_DEFUZZIFY
+DEFUZZIFY salir_carcel
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
+END_DEFUZZIFY
+DEFUZZIFY huir
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
+END_DEFUZZIFY
+DEFUZZIFY huir_disperso
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
+END_DEFUZZIFY
+DEFUZZIFY huir_seguro
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
+END_DEFUZZIFY
+DEFUZZIFY interceptar_cruce
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
+END_DEFUZZIFY
+DEFUZZIFY guardia_pp
+   TERM poco := (0, 1) (4, 0); TERM algo := trian 2 5 8; TERM mucho := (6, 0) (10, 1);
+   METHOD : COG; DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK reglas
+   AND : MIN;
+   ACT : MIN;
+   ACCU : MAX;
+
+   // ---- Nivel MUCHO: emergencias ----
+   RULE 1 : IF enCarcel IS si THEN salir_carcel IS mucho;
+   // CAMBIO v2: huir -> huir_seguro (elige el cruce con ventaja sobre Ms. Pac-Man)
+   RULE 2 : IF tiempoComestible IS NOT no AND distPacman IS panico THEN huir_seguro IS mucho;
+   RULE 3 : IF tiempoComestible IS NOT no AND distPacman IS media THEN huir_disperso IS mucho;
+   RULE 4 : IF tiempoComestible IS poco AND distPacman IS lejos THEN perseguir IS mucho;
+   RULE 5 : IF tiempoComestible IS mucho AND distPacman IS lejos THEN huir_disperso IS mucho;
+   // CAMBIO v2: idem para el peligro de Power Pill
+   RULE 6 : IF enCarcel IS no AND tiempoComestible IS no AND distPPMsPacman IS peligro AND ventajaPP IS no THEN huir_seguro IS mucho;
+   RULE 7 : IF enCarcel IS no AND tiempoComestible IS no AND ventajaPP IS si AND distPPMsPacman IS cercana THEN cortar_pp IS mucho;
+   RULE 8 : IF enCarcel IS no AND tiempoComestible IS no AND numPills IS pocas AND numPP IS cero THEN perseguir IS mucho;
+
+   // ---- Nivel ALGO: coordinacion de equipo ----
+   RULE 9 : IF enCarcel IS no AND tiempoComestible IS no AND distPacman IS media AND amigosCerca IS varios THEN cerco IS algo;
+
+   // ---- Nivel POCO: roles por defecto ----
+   RULE 10: IF enCarcel IS no AND tiempoComestible IS no AND ranking IS primero THEN perseguir IS poco;
+   // CAMBIO v2: interceptar -> interceptar_cruce
+   RULE 11: IF enCarcel IS no AND tiempoComestible IS no AND ranking IS segundo THEN interceptar_cruce IS poco;
+   RULE 12: IF enCarcel IS no AND tiempoComestible IS no AND ranking IS tercero THEN emboscar IS poco;
+   // CAMBIO v2: patrullar -> guardia_pp
+   RULE 13: IF enCarcel IS no AND tiempoComestible IS no AND ranking IS cuarto AND numPP IS quedan THEN guardia_pp IS poco;
+   RULE 14: IF enCarcel IS no AND tiempoComestible IS no AND ranking IS cuarto AND numPP IS cero THEN cerco IS poco;
+
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
