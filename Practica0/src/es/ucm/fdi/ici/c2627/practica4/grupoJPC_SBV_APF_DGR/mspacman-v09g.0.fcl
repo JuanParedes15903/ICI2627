@@ -1,0 +1,173 @@
+FUNCTION_BLOCK MsPacMan
+
+VAR_INPUT
+   peligro : REAL;
+   amenazas : REAL;
+   salidasSeguras : REAL;
+   comestible : REAL;
+   margenCaza : REAL;
+   alcanzables : REAL;
+   cadena : REAL;
+   interceptar : REAL;
+   ppill : REAL;
+   ventajaPPill : REAL;
+   combo : REAL;
+   enCrucePPill : REAL;
+   ppillUnicaSalida : REAL;
+   pasillos : REAL;
+   pasillosIguales : REAL;
+END_VAR
+
+VAR_OUTPUT
+   PastillaMasCercana : REAL;
+   HuirDelFantasmaMasCercano : REAL;
+   PerseguirFantasmaComestibleMasCercano : REAL;
+   IrAPorLasUltimasPastillas : REAL;
+   EsperarPastillaDePoderHastaCombo : REAL;
+END_VAR
+
+FUZZIFY peligro
+   TERM cerca := (0, 1) (15, 1) (35, 0);
+   TERM media := trian 20 45 70;
+   TERM lejos := (55, 0) (80, 1) (150, 1);
+END_FUZZIFY
+
+FUZZIFY amenazas
+   TERM ninguna := (0, 1) (1, 0);
+   TERM una := trian 0 1 2;
+   TERM varias := (1, 0) (2, 1) (4, 1);
+END_FUZZIFY
+
+FUZZIFY salidasSeguras
+   TERM ninguna := (0, 1) (1, 0);
+   TERM una := trian 0 1 2;
+   TERM varias := (1, 0) (2, 1) (4, 1);
+END_FUZZIFY
+
+FUZZIFY comestible
+   TERM cerca := (0, 1) (15, 1) (35, 0);
+   TERM media := trian 20 45 70;
+   TERM lejos := (55, 0) (80, 1) (150, 1);
+END_FUZZIFY
+
+FUZZIFY margenCaza
+   TERM ninguno := (0, 1) (1, 0);
+   TERM justo := (0, 0) (1, 1) (10, 1) (25, 0);
+   TERM holgado := (10, 0) (30, 1) (150, 1);
+END_FUZZIFY
+
+FUZZIFY alcanzables
+   TERM ninguno := (0, 1) (1, 0);
+   TERM uno := trian 0 1 2;
+   TERM varios := (1, 0) (2, 1) (4, 1);
+END_FUZZIFY
+
+FUZZIFY cadena
+   TERM ninguna := (0, 1) (2, 0);
+   TERM larga := (1, 0) (2, 1) (4, 1);
+END_FUZZIFY
+
+FUZZIFY interceptar
+   TERM no := (0, 1) (1, 0);
+   TERM si := (0, 0) (1, 1);
+END_FUZZIFY
+
+FUZZIFY ppill
+   TERM cerca := (0, 1) (15, 1) (35, 0);
+   TERM media := trian 20 45 70;
+   TERM lejos := (55, 0) (80, 1) (150, 1);
+END_FUZZIFY
+
+FUZZIFY ventajaPPill
+   TERM llegaDespues := (-50, 1) (-5, 1) (5, 0);
+   TERM justa := trian -10 0 10;
+   TERM llegaAntes := (-5, 0) (5, 1) (50, 1);
+END_FUZZIFY
+
+FUZZIFY combo
+   TERM pocos := (0, 1) (2, 1) (3, 0);
+   TERM muchos := (2, 0) (3, 1) (4, 1);
+END_FUZZIFY
+
+FUZZIFY enCrucePPill
+   TERM no := (0, 1) (1, 0);
+   TERM si := (0, 0) (1, 1);
+END_FUZZIFY
+
+FUZZIFY ppillUnicaSalida
+   TERM no := (0, 1) (1, 0);
+   TERM si := (0, 0) (1, 1);
+END_FUZZIFY
+
+FUZZIFY pasillos
+   TERM pocos := (0, 1) (4, 1) (8, 0);
+   TERM muchos := (4, 0) (8, 1) (150, 1);
+END_FUZZIFY
+
+FUZZIFY pasillosIguales
+   TERM no := (0, 1) (1, 0);
+   TERM si := (0, 0) (1, 1);
+END_FUZZIFY
+
+DEFUZZIFY EsperarPastillaDePoderHastaCombo
+   TERM poco := (0, 1) (4, 0);
+   TERM algo := trian 2 5 8;
+   TERM mucho := (6, 0) (10, 1);
+   METHOD : COG;
+   DEFAULT := 0;
+END_DEFUZZIFY
+
+DEFUZZIFY IrAPorLasUltimasPastillas
+   TERM poco := (0, 1) (4, 0);
+   TERM algo := trian 2 5 8;
+   TERM mucho := (6, 0) (10, 1);
+   METHOD : COG;
+   DEFAULT := 0;
+END_DEFUZZIFY
+
+DEFUZZIFY PastillaMasCercana
+   TERM poco := (0, 1) (4, 0);
+   TERM algo := trian 2 5 8;
+   TERM mucho := (6, 0) (10, 1);
+   METHOD : COG;
+   DEFAULT := 0;
+END_DEFUZZIFY
+
+DEFUZZIFY HuirDelFantasmaMasCercano
+   TERM poco := (0, 1) (4, 0);
+   TERM algo := trian 2 5 8;
+   TERM mucho := (6, 0) (10, 1);
+   METHOD : COG;
+   DEFAULT := 0;
+END_DEFUZZIFY
+
+DEFUZZIFY PerseguirFantasmaComestibleMasCercano
+   TERM poco := (0, 1) (4, 0);
+   TERM algo := trian 2 5 8;
+   TERM mucho := (6, 0) (10, 1);
+   METHOD : COG;
+   DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK reglas
+   AND : MIN;
+   ACT : MIN;
+   ACCU : MAX;
+
+   RULE 1 : IF peligro IS cerca THEN HuirDelFantasmaMasCercano IS mucho;
+   RULE 2 : IF peligro IS lejos THEN HuirDelFantasmaMasCercano IS poco;
+   RULE 3 : IF peligro IS cerca THEN PastillaMasCercana IS poco;
+   RULE 4 : IF peligro IS media THEN PastillaMasCercana IS algo;
+   RULE 5 : IF peligro IS lejos THEN PastillaMasCercana IS mucho;
+   RULE 6 : IF margenCaza IS holgado AND peligro IS NOT cerca THEN PerseguirFantasmaComestibleMasCercano IS mucho, PastillaMasCercana IS poco;
+   RULE 7 : IF margenCaza IS justo AND comestible IS cerca AND peligro IS NOT cerca THEN PerseguirFantasmaComestibleMasCercano IS mucho, PastillaMasCercana IS poco;
+   RULE 8 : IF margenCaza IS justo AND comestible IS NOT cerca AND alcanzables IS uno THEN PerseguirFantasmaComestibleMasCercano IS poco;
+   RULE 9 : IF alcanzables IS varios AND margenCaza IS NOT ninguno AND peligro IS NOT cerca THEN PerseguirFantasmaComestibleMasCercano IS mucho, PastillaMasCercana IS poco;
+   RULE 10 : IF peligro IS cerca AND margenCaza IS NOT ninguno THEN PerseguirFantasmaComestibleMasCercano IS poco;
+   RULE 11 : IF enCrucePPill IS si AND combo IS pocos AND peligro IS NOT cerca AND margenCaza IS ninguno AND pasillos IS muchos THEN EsperarPastillaDePoderHastaCombo IS mucho, PastillaMasCercana IS poco;
+   RULE 12 : IF combo IS muchos THEN EsperarPastillaDePoderHastaCombo IS poco;
+   RULE 13 : IF pasillos IS pocos AND peligro IS NOT cerca AND margenCaza IS ninguno THEN IrAPorLasUltimasPastillas IS mucho, PastillaMasCercana IS poco;
+   RULE 14 : IF pasillos IS muchos THEN IrAPorLasUltimasPastillas IS poco;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

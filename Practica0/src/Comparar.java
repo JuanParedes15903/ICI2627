@@ -39,8 +39,19 @@ public class Comparar {
     static final Map<String, Supplier<PacmanController>> RIVALES_PACMANS = Rivales.pacmans();
 
     static {
-        MIS_PACMANS.put("v0", () -> new MsPacMan("mspacman-v0.fcl"));     // huir, comer y perseguir
-        MIS_PACMANS.put("v1", () -> new MsPacMan("mspacman-v1.fcl"));     // con la píldora de poder
+        MIS_PACMANS.put("v0", () -> new MsPacMan("mspacman-v00.fcl"));
+        MIS_PACMANS.put("v1", () -> new MsPacMan("mspacman-v01.fcl"));
+        MIS_PACMANS.put("v2", () -> new MsPacMan("mspacman-v01.fcl", es.ucm.fdi.ici.c2627.practica4.grupoJPC_SBV_APF_DGR.mspacman.MsPacManInputV2::new));
+        MIS_PACMANS.put("v3", () -> new MsPacMan("mspacman-v01.fcl", es.ucm.fdi.ici.c2627.practica4.grupoJPC_SBV_APF_DGR.mspacman.MsPacManInputV3::new));
+        MIS_PACMANS.put("v4", () -> new MsPacMan("mspacman-v04e.fcl", es.ucm.fdi.ici.c2627.practica4.grupoJPC_SBV_APF_DGR.mspacman.MsPacManInputV4::new));
+        MIS_PACMANS.put("v5.0", () -> new MsPacMan("mspacman-v05.0.fcl"));
+        MIS_PACMANS.put("v5.1", () -> new MsPacMan("mspacman-v05.1.fcl", es.ucm.fdi.ici.c2627.practica4.grupoJPC_SBV_APF_DGR.mspacman.MsPacManInputV4::new));
+        MIS_PACMANS.put("v6.0", () -> new MsPacMan("mspacman-v06.0.fcl"));
+        MIS_PACMANS.put("v6.1", () -> new MsPacMan("mspacman-v06.1.fcl", es.ucm.fdi.ici.c2627.practica4.grupoJPC_SBV_APF_DGR.mspacman.MsPacManInputV4::new));
+        MIS_PACMANS.put("v7.0", () -> new MsPacMan("mspacman-v07.0.fcl"));
+        MIS_PACMANS.put("v7.1", () -> new MsPacMan("mspacman-v07.1.fcl", es.ucm.fdi.ici.c2627.practica4.grupoJPC_SBV_APF_DGR.mspacman.MsPacManInputV4::new));
+        MIS_PACMANS.put("v10.0", () -> new MsPacMan("mspacman-v10.0.fcl"));
+        MIS_PACMANS.put("v10.1", () -> new MsPacMan("mspacman-v10.1.fcl", es.ucm.fdi.ici.c2627.practica4.grupoJPC_SBV_APF_DGR.mspacman.MsPacManInputV4::new));
 
         MIS_FANTASMAS.put("v0", () -> new Ghosts("ghosts-v0.fcl"));       // perseguir o huir
         MIS_FANTASMAS.put("v1", () -> new Ghosts("ghosts-v1.fcl"));       // con la píldora de poder
