@@ -173,3 +173,12 @@ class MCTS:
         self.iteraciones_hechas = n
         return max(raiz.hijos, key=lambda h: h.visitas).jugada   # el más visitado
 
+class MCTSRivales(MCTS):
+    def seleccionar(self, nodo):
+        rival = nodo.padre is not None and nodo.color == self.yo
+        if not rival:
+            return super().seleccionar(nodo)
+        return max(nodo.hijos, key=lambda h: (
+            1 - h.valor / h.visitas
+            + self.c * math.sqrt(math.log(nodo.visitas) / h.visitas)
+        ))
