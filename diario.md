@@ -59,3 +59,11 @@ mcts-expuesto-p0        100% ±0 (16-0-0)       97% ±6 (15-1-0)       6% ±12 (
 ab2                     100% ±0 (16-0-0)      100% ±0 (16-0-0)       47% ±21 (5-5-6)       82% ±10
 
 Como se puede ver, salvo en el caso del modelo mcts-expuesto-p0, que es el que juega de la forma más segura posible, no hay un aumento muy significativo en relación al modelo base, aunque sí que se puede ver que, en este experimento, todos han sido ligeramente mejores que el modelo base, aunque lo más probable es que haya sido suerte y no mejoría. Aunque, viendo que todos los modelos tienen una profundidad baja, usar el modelo base no es la mejor comparativa, ya que usa profundidad 10, por lo que el siguiente experimento consistirá en repetir con los modelos de heurística, con más partidas (64 en total) y comparando con el modelo mcts-p0: 
+mcts-p0                  99% ±2 (63-1-0)      84% ±7 (47-13-4)        2% ±3 (0-3-61)        62% ±7
+mcts-heur-p0            100% ±0 (64-0-0)       92% ±5 (55-8-1)        1% ±2 (0-1-63)        64% ±7
+mcts-heur-p4            100% ±0 (64-0-0)      81% ±8 (46-12-6)        0% ±0 (0-0-64)        60% ±7
+mcts-centro-p0          100% ±0 (64-0-0)      87% ±7 (50-11-3)        2% ±3 (1-0-63)        63% ±7
+mcts-expuesto-p0        100% ±0 (64-0-0)       92% ±6 (57-4-3)        2% ±2 (0-2-62)        65% ±7
+ab2                      98% ±3 (61-3-0)      100% ±0 (64-0-0)     50% ±10 (22-20-22)        83% ±5
+
+Como se puede ver en los resultados de la simulación, no hay una mejora real con ninguno de los modelos, siendo que el que mejores resultados tiene es mcts-expuesto-p0, pero está dentro de lo que se consideraría ruido, aunque eso sería mirando el total, ya que, si se miran las partidas contra los oponentes de forma individual, se puede observar que mcts-expuesto-p0 gana mucho más y de forma más consistente, contra el rival Voraz, por lo que sí que hay una mejoría en ese apartado, aunque luego todos pierdan contra AlfaBeta2. La partida que gana mcts-centro-p0 seguramente sea suerte y nada a tener en cuenta.
