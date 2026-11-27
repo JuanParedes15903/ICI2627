@@ -85,7 +85,40 @@ riv-c14        100% ±0 (64-0-0)       98% ±3 (61-3-0)        2% ±2 (0-2-62)  
 El que mejor resultado ha tenido es el c=0.3, por lo que continuamos con ese.
 
 Después elegimos la profundidad con los siguientes casos:
-    "riv-c03": lambda: MCTSRivales(c=0.3, profundidad=0),
-    "riv-c05": lambda: MCTSRivales(c=0.3, profundidad=4),
-    "riv-c08": lambda: MCTSRivales(c=0.3, profundidad=8),
-    "riv-c14": lambda: MCTSRivales(c=0.3, profundidad=12)
+    "riv-p0": lambda: MCTSRivales(c=0.3, profundidad=0),
+    "riv-p2": lambda: MCTSRivales(c=0.3, profundidad=2),
+    "riv-p4": lambda: MCTSRivales(c=0.3, profundidad=4),
+    "riv-p6": lambda: MCTSRivales(c=0.3, profundidad=6),
+    "riv-p8": lambda: MCTSRivales(c=0.3, profundidad=8)
+
+Y han dado los siguientes resultados:
+riv-p0        100% ±0 (64-0-0)       98% ±3 (61-3-0)        9% ±7 (5-2-57)        69% ±7
+riv-p2        100% ±0 (64-0-0)       95% ±5 (59-3-2)        3% ±3 (0-4-60)        66% ±7
+riv-p4         98% ±2 (62-2-0)       95% ±5 (59-3-2)        2% ±2 (0-2-62)        65% ±7
+riv-p6         99% ±2 (63-1-0)       94% ±6 (59-2-3)        2% ±2 (0-2-62)        65% ±7
+riv-p8         99% ±2 (63-1-0)       89% ±7 (55-4-5)        2% ±3 (1-1-62)        64% ±7
+
+Por ultimo se han probado las recompensas:
+
+    "riv-material": lambda: MCTSRivales(c=0.8, profundidad=4),
+    "riv-centro": lambda: MCTSRivales(c=0.8, profundidad=4, recompensa=hacer_recompensa(1.0, 0.0)),
+    "riv-expuesto": lambda: MCTSRivales(c=0.8, profundidad=4, recompensa=hacer_recompensa(0.0, 1.0)),
+    "riv-ambas": lambda: MCTSRivales(c=0.8, profundidad=4, recompensa=hacer_recompensa(1.0, 1.0)),
+
+El resultado final:
+riv-material         98% ±2 (62-2-0)       93% ±4 (55-9-0)        9% ±7 (5-1-58)        67% ±7
+riv-centro           98% ±2 (62-2-0)      89% ±5 (50-14-0)        6% ±5 (2-4-58)        65% ±7
+riv-expuesto         99% ±2 (63-1-0)       95% ±5 (58-5-1)     26% ±10 (12-9-43)        73% ±6
+riv-ambas            99% ±2 (63-1-0)       97% ±3 (60-4-0)      23% ±9 (7-15-42)        73% ±6
+
+Para comparar con la version anterior:
+    "mcts-expuesto-p0": lambda: MCTS(profundidad=0, recompensa=hacer_recompensa(0.0, 1.0)),
+    "riv-ambas": lambda: MCTSRivales(c=0.3, profundidad=0, recompensa=hacer_recompensa(1.0, 1.0))
+
+Resultado:
+mcts-expuesto-p0         98% ±2 (62-2-0)       91% ±7 (57-3-4)        8% ±6 (2-6-56)        66% ±7
+riv-ambas                98% ±2 (62-2-0)      100% ±0 (64-0-0)      18% ±8 (6-11-47)        72% ±6
+
+La segunda version es mejor por lo que las siguientes clases heredaran de esta.
+
+MCTSTiempo:
