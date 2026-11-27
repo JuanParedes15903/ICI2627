@@ -175,10 +175,58 @@ class MCTS:
 
 class MCTSRivales(MCTS):
     def seleccionar(self, nodo):
-        rival = nodo.padre is not None and nodo.color == self.yo
-        if not rival:
-            return super().seleccionar(nodo)
-        return max(nodo.hijos, key=lambda h: (
-            1 - h.valor / h.visitas
-            + self.c * math.sqrt(math.log(nodo.visitas) / h.visitas)
-        ))
+        rival = nodo.color == self.yo
+        def puntos(h):
+            media = h.valor / h.visitas
+            if rival:
+                media = 1 - media
+            return media + self.c * math.sqrt(math.log(nodo.visitas) / h.visitas)
+        return max(nodo.hijos, key=puntos)
+
+class MCTSTiempo(MCTSRivales):
+    def elegir(self, tablero, tiempo):
+        inicio = time.perf_counter()
+        fin = inicio + tiempo * 0.9    # un margen para no pasarse
+        self.yo = tablero.turn
+
+        # Regla 1: una sola jugada legal, se devuelve sin crear el árbol
+        legales = list(tablero.legal_moves)
+        if len(legales) == 1:
+            self.estadisticas = [(legales[0], 0, 0.5)]
+            self.iteraciones_hechas = 0
+            return legales[0]
+
+        raiz = Nodo(tablero)
+        n = 0
+        while True:
+            t = tablero.copy(stack=False)
+            nodo = raiz
+            while not nodo.sin_probar and nodo.hijos:      # 1. selección
+                nodo = self.seleccionar(nodo)
+                t.push(nodo.jugada)
+            if nodo.sin_probar:                              # 2. expansión
+                nodo = self.expandir(nodo, t)
+            r = self.simular(t)                              # 3. simulación
+            self.retropropagar(nodo, r)                      # 4. retropropagación
+            n += 1
+
+            if self.iteraciones:                             # modo pruebas: sin reloj
+                if n >= self.iteraciones:
+                    break
+                continue
+
+            ahora = time.perf_counter()
+            if ahora > fin:
+                break
+
+            # Regla 2: parar si la segunda no puede alcanzar a la primera
+            if n % 50 == 0 and len(raiz.hijos) >= 2:
+                caben = n / (ahora - inicio) * (fin - ahora)   # iteraciones que aún caben
+                v = sorted((h.visitas for h in raiz.hijos), reverse=True)
+                if v[1] + caben < v[0]:
+                    break
+
+        self.estadisticas = sorted(((h.jugada, h.visitas, h.valor / h.visitas) for h in raiz.hijos),
+                                   key=lambda e: -e[1])
+        self.iteraciones_hechas = n
+        return max(raiz.hijos, key=lambda h: h.visitas).jugada

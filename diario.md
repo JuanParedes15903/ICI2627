@@ -67,3 +67,25 @@ mcts-expuesto-p0        100% ±0 (64-0-0)       92% ±6 (57-4-3)        2% ±2 (
 ab2                      98% ±3 (61-3-0)      100% ±0 (64-0-0)     50% ±10 (22-20-22)        83% ±5
 
 Como se puede ver en los resultados de la simulación, no hay una mejora real con ninguno de los modelos, siendo que el que mejores resultados tiene es mcts-expuesto-p0, pero está dentro de lo que se consideraría ruido, aunque eso sería mirando el total, ya que, si se miran las partidas contra los oponentes de forma individual, se puede observar que mcts-expuesto-p0 gana mucho más y de forma más consistente, contra el rival Voraz, por lo que sí que hay una mejoría en ese apartado, aunque luego todos pierdan contra AlfaBeta2. La partida que gana mcts-centro-p0 seguramente sea suerte y nada a tener en cuenta.
+
+Para elegir los mejores parámetros de MCTSRivales se han hecho las siguientes pruebas:
+Para elegir el mejor c se han puesto los siguientes casos: 
+    "riv-c03": lambda: MCTSRivales(c=0.3, profundidad=0),
+    "riv-c05": lambda: MCTSRivales(c=0.5, profundidad=0),
+    "riv-c08": lambda: MCTSRivales(c=0.8, profundidad=0),
+    "riv-c14": lambda: MCTSRivales(c=1.4, profundidad=0)
+
+Que han dado los siguientes resultados:
+            
+riv-c03         98% ±2 (62-2-0)       99% ±2 (63-1-0)       13% ±8 (6-5-53)        70% ±6
+riv-c05         99% ±2 (63-1-0)       95% ±5 (58-5-1)       10% ±7 (5-3-56)        68% ±7
+riv-c08         98% ±2 (62-2-0)      92% ±5 (54-10-0)        9% ±7 (4-4-56)        67% ±6
+riv-c14        100% ±0 (64-0-0)       98% ±3 (61-3-0)        2% ±2 (0-2-62)        66% ±7
+
+El que mejor resultado ha tenido es el c=0.3, por lo que continuamos con ese.
+
+Después elegimos la profundidad con los siguientes casos:
+    "riv-c03": lambda: MCTSRivales(c=0.3, profundidad=0),
+    "riv-c05": lambda: MCTSRivales(c=0.3, profundidad=4),
+    "riv-c08": lambda: MCTSRivales(c=0.3, profundidad=8),
+    "riv-c14": lambda: MCTSRivales(c=0.3, profundidad=12)
