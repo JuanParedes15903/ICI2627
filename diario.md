@@ -100,10 +100,10 @@ riv-p8         99% ±2 (63-1-0)       89% ±7 (55-4-5)        2% ±3 (1-1-62)   
 
 Por ultimo se han probado las recompensas:
 
-    "riv-material": lambda: MCTSRivales(c=0.8, profundidad=4),
-    "riv-centro": lambda: MCTSRivales(c=0.8, profundidad=4, recompensa=hacer_recompensa(1.0, 0.0)),
-    "riv-expuesto": lambda: MCTSRivales(c=0.8, profundidad=4, recompensa=hacer_recompensa(0.0, 1.0)),
-    "riv-ambas": lambda: MCTSRivales(c=0.8, profundidad=4, recompensa=hacer_recompensa(1.0, 1.0)),
+    "riv-material": lambda: MCTSRivales(c=0.3, profundidad=0),
+    "riv-centro": lambda: MCTSRivales(c=0.3, profundidad=0, recompensa=hacer_recompensa(1.0, 0.0)),
+    "riv-expuesto": lambda: MCTSRivales(c=0.3, profundidad=0, recompensa=hacer_recompensa(0.0, 1.0)),
+    "riv-ambas": lambda: MCTSRivales(c=0.3, profundidad=0, recompensa=hacer_recompensa(1.0, 1.0)),
 
 El resultado final:
 riv-material         98% ±2 (62-2-0)       93% ±4 (55-9-0)        9% ±7 (5-1-58)        67% ±7
@@ -113,12 +113,70 @@ riv-ambas            99% ±2 (63-1-0)       97% ±3 (60-4-0)      23% ±9 (7-15-
 
 Para comparar con la version anterior:
     "mcts-expuesto-p0": lambda: MCTS(profundidad=0, recompensa=hacer_recompensa(0.0, 1.0)),
-    "riv-ambas": lambda: MCTSRivales(c=0.3, profundidad=0, recompensa=hacer_recompensa(1.0, 1.0))
+    "riv-expuesto": lambda: MCTSRivales(c=0.3, profundidad=0, recompensa=hacer_recompensa(0.0, 1.0))
 
 Resultado:
 mcts-expuesto-p0         98% ±2 (62-2-0)       91% ±7 (57-3-4)        8% ±6 (2-6-56)        66% ±7
-riv-ambas                98% ±2 (62-2-0)      100% ±0 (64-0-0)      18% ±8 (6-11-47)        72% ±6
+riv-expuesto               98% ±2 (62-2-0)      100% ±0 (64-0-0)      18% ±8 (6-11-47)        72% ±6
 
 La segunda version es mejor por lo que las siguientes clases heredaran de esta.
 
 MCTSTiempo:
+Para probar la c se usaron los siguientes casos:
+    "tiempo-c03": lambda: MCTSTiempo(c=0.3),
+    "tiempo-c05": lambda: MCTSTiempo(c=0.5),
+    "tiempo-c07": lambda: MCTSTiempo(c=0.7),
+    "tiempo-c10": lambda: MCTSTiempo(c=1.0)
+
+Y se obtuvieron los siguientes resultados:
+tiempo-c03         99% ±2 (63-1-0)     72% ±10 (39-14-11)        1% ±2 (0-1-63)        57% ±7
+tiempo-c05        100% ±0 (64-0-0)      81% ±8 (46-12-6)        3% ±4 (1-2-61)        61% ±7
+tiempo-c07        100% ±0 (64-0-0)       88% ±7 (54-5-5)        5% ±5 (2-3-59)        65% ±7
+tiempo-c10         99% ±2 (63-1-0)     62% ±11 (33-13-18)        2% ±3 (1-0-63)        54% ±7
+
+Para probar la profundidad se usaron los siguientes casos:
+    "tiempo-p0": lambda: MCTSTiempo(c=0.7, profundidad=0),
+    "tiempo-p1": lambda: MCTSTiempo(c=0.7, profundidad=1),
+    "tiempo-p2": lambda: MCTSTiempo(c=0.7, profundidad=2),
+    "tiempo-p3": lambda: MCTSTiempo(c=0.7, profundidad=3),
+    "tiempo-p4": lambda: MCTSTiempo(c=0.7, profundidad=4),
+    "tiempo-p5": lambda: MCTSTiempo(c=0.7, profundidad=5),
+    "tiempo-p6": lambda: MCTSTiempo(c=0.7, profundidad=6),
+    "tiempo-p7": lambda: MCTSTiempo(c=0.7, profundidad=7),
+
+
+Se han obtenido los siguientes resultados:
+tiempo-p0         98% ±2 (62-2-0)       92% ±6 (56-6-2)       15% ±9 (8-3-53)        68% ±6
+tiempo-p1         99% ±2 (63-1-0)       91% ±6 (55-6-3)        8% ±6 (2-6-56)        66% ±7
+tiempo-p2        100% ±0 (64-0-0)       93% ±6 (58-3-3)        5% ±5 (2-2-60)        66% ±7
+tiempo-p3         98% ±2 (62-2-0)       93% ±5 (57-5-2)        2% ±3 (1-1-62)        65% ±7
+tiempo-p4        100% ±0 (64-0-0)       91% ±7 (57-3-4)        1% ±2 (0-1-63)        64% ±7
+tiempo-p5         99% ±2 (63-1-0)       93% ±6 (58-3-3)        5% ±5 (2-2-60)        66% ±7
+tiempo-p6         98% ±3 (62-1-1)       92% ±6 (56-6-2)        2% ±3 (1-0-63)        64% ±7
+tiempo-p7         99% ±2 (63-1-0)       92% ±6 (56-6-2)        2% ±3 (0-3-61)        65% ±7
+
+Por ultimo se han comprobado las recompensas:
+    "tiempo-material": lambda: MCTSTiempo(c=0.3, profundidad=0),
+    "tiempo-centro": lambda: MCTSTiempo(c=0.3, profundidad=0, recompensa=hacer_recompensa(1.0, 0.0)),
+    "tiempo-expuesto": lambda: MCTSTiempo(c=0.3, profundidad=0, recompensa=hacer_recompensa(0.0, 1.0)),
+    "tiempo-ambas": lambda: MCTSTiempo(c=0.3, profundidad=0, recompensa=hacer_recompensa(1.0, 1.0))
+
+Y han dado los siguientes resultados:
+tiempo-material         98% ±3 (61-3-0)       98% ±3 (61-3-0)     35% ±10 (14-17-33)        77% ±6
+tiempo-centro          100% ±0 (64-0-0)       95% ±4 (58-6-0)     34% ±11 (16-11-37)        76% ±6
+tiempo-expuesto         98% ±2 (62-2-0)       96% ±4 (60-3-1)      27% ±9 (10-14-40)        74% ±6
+tiempo-ambas           100% ±0 (64-0-0)       99% ±2 (63-1-0)       20% ±9 (8-9-47)        73% ±6
+
+Para comparar con las versiones anteriores usamos tanto tiempo-material como tiempo-centro
+    "tiempo-material": lambda: MCTSTiempo(c=0.3, profundidad=0),
+    "tiempo-centro": lambda: MCTSTiempo(c=0.3, profundidad=0, recompensa=hacer_recompensa(1.0, 0.0)),
+    "mcts-expuesto-p0": lambda: MCTS(profundidad=0, recompensa=hacer_recompensa(0.0, 1.0)),
+    "riv-expuesto": lambda: MCTSRivales(c=0.3, profundidad=0, recompensa=hacer_recompensa(0.0, 1.0))
+
+Han dado los siguientes resultados:
+tiempo-material          98% ±2 (62-2-0)      100% ±0 (64-0-0)     45% ±11 (22-14-28)        81% ±5
+tiempo-centro            98% ±2 (62-2-0)       98% ±3 (61-3-0)     33% ±10 (15-12-37)        76% ±6
+mcts-expuesto-p0         99% ±2 (63-1-0)       95% ±5 (60-2-2)        9% ±6 (2-7-55)        68% ±7
+riv-expuesto            100% ±0 (64-0-0)       98% ±2 (62-2-0)      27% ±9 (8-18-38)        75% ±
+
+Finalmente nos quedamos con tiempo-material.
